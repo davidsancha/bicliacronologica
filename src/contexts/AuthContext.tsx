@@ -15,6 +15,7 @@ interface AuthContextType {
     signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
     signOut: () => Promise<void>;
     updateProfile: (updates: any) => Promise<void>;
+    uploadAvatar: (file: File) => Promise<string>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -173,6 +174,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
+    const uploadAvatar = async (file: File) => {
+        if (!user || !supabase) throw new Error("Not authenticated");
+
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+            const filePath = `${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('avatars')
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('avatars')
+                .getPublicUrl(filePath);
+
+            await updateProfile({ avatar_url: publicUrl });
+            return publicUrl;
+        } catch (error) {
+            console.error('Error uploading avatar:', error);
+            throw error;
+        }
+    };
+
     const signOut = async () => {
         if (!supabase) return;
         const { error } = await supabase.auth.signOut();
@@ -196,7 +223,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             signInWithPassword,
             signUp,
             signOut,
-            updateProfile
+            updateProfile,
+            uploadAvatar
         }}>
             {children}
         </AuthContext.Provider>

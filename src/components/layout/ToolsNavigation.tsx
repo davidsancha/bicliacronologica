@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { cn } from '../../utils/cn';
 import { useAuth } from '../../contexts/AuthContext';
 import { ProfileMenu } from './ProfileMenu';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ToolsNavigationProps {
     onEditProfile?: () => void;
@@ -15,6 +16,24 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
     const location = useLocation();
     const { user, profile, isProfileComplete } = useAuth();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
+
+    // Hide/Show on scroll logic
+    React.useEffect(() => {
+        const handleScroll = () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                setIsVisible(false); // Scrolling down
+            } else {
+                setIsVisible(true); // Scrolling up
+            }
+            setLastScrollY(currentScrollY);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [lastScrollY]);
 
     const firstName = profile?.first_name || profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuário';
     const avatarUrl = profile?.avatar_url;
@@ -31,11 +50,11 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
     ];
 
     const bottomNavItems = [
-        { type: '/', label: 'Texto', icon: <BookOpen size={20} /> },
-        { type: '/pregacao', label: 'Pregações', icon: <Mic size={20} /> },
-        { type: '/comentario', label: 'Comentários', icon: <MessageSquare size={20} /> },
-        { type: '/louvor', label: 'Louvores', icon: <Music size={20} /> },
-        { type: 'perfil', label: 'Guias', isProfile: true },
+        { type: '/', label: 'Texto', icon: <BookOpen size={24} /> },
+        { type: '/pregacao', label: 'Pregações', icon: <Mic size={24} /> },
+        { type: '/comentario', label: 'Comentários', icon: <MessageSquare size={24} /> },
+        { type: '/louvor', label: 'Louvores', icon: <Music size={24} /> },
+        { type: 'perfil', label: 'Perfil', isProfile: true },
     ];
 
     return (
@@ -70,7 +89,12 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
             </nav>
 
             {/* Mobile Bottom Navigation */}
-            <nav className="lg:hidden fixed bottom-1 left-4 right-4 bg-white/98 backdrop-blur-2xl border border-slate-200 px-2 py-2 flex items-center justify-around z-40 shadow-[0_12px_40px_rgba(0,0,0,0.15)] rounded-[2rem] pb-2 safe-area-bottom">
+            <motion.nav
+                initial={{ y: 0 }}
+                animate={{ y: isVisible ? 0 : 100 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="lg:hidden fixed bottom-4 left-4 right-4 bg-white/98 backdrop-blur-2xl border border-slate-200/50 px-2 py-4 flex items-center justify-around z-40 shadow-[0_20px_50px_rgba(0,0,0,0.2)] rounded-[2.5rem] safe-area-bottom border-t border-white/20"
+            >
                 {bottomNavItems.map((item) => {
                     const isActive = location.pathname === item.type;
 
@@ -85,7 +109,7 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
                                     )}
                                 >
                                     <div className={cn(
-                                        "w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-black transition-all overflow-hidden border-2",
+                                        "w-9 h-9 rounded-xl flex items-center justify-center text-[10px] font-black transition-all overflow-hidden border-2",
                                         isProfileOpen || isActive ? 'border-sky-500 bg-sky-500 text-white shadow-lg shadow-sky-500/20 scale-110' : 'border-slate-100 bg-slate-100 text-slate-400'
                                     )}>
                                         {avatarUrl ? (
@@ -94,14 +118,8 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
                                             firstName.charAt(0).toUpperCase()
                                         )}
                                     </div>
-                                    <span className={cn(
-                                        "text-[9px] font-bold uppercase tracking-wider transition-all",
-                                        isProfileOpen || isActive ? 'opacity-100' : 'opacity-70 font-medium'
-                                    )}>
-                                        {item.label}
-                                    </span>
                                     {!isProfileComplete && (
-                                        <span className="absolute top-0 right-[25%] w-2 h-2 bg-amber-500 border-2 border-white rounded-full animate-bounce" />
+                                        <span className="absolute top-0 right-[20%] w-3.5 h-3.5 bg-red-600 border-2 border-white rounded-full animate-bounce shadow-sm" />
                                     )}
                                 </button>
                                 <ProfileMenu
@@ -120,26 +138,20 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
                             key={item.type}
                             onClick={() => navigate(item.type)}
                             className={cn(
-                                "flex flex-col items-center justify-center gap-1.5 flex-1 px-1 py-1 rounded-xl transition-all duration-300",
-                                isActive ? 'text-sky-500' : 'text-slate-400 active:scale-95'
+                                "flex flex-col items-center justify-center flex-1 py-1 transition-all duration-300",
+                                isActive ? 'text-sky-500' : 'text-slate-400 active:scale-90'
                             )}
                         >
                             <div className={cn("transition-transform duration-300", isActive ? 'scale-110' : '')}>
                                 {React.cloneElement(item.icon as React.ReactElement, {
-                                    strokeWidth: isActive ? 2.5 : 2,
+                                    strokeWidth: isActive ? 3 : 2,
                                     className: isActive ? 'drop-shadow-[0_0_8px_rgba(14,165,233,0.3)]' : ''
                                 })}
                             </div>
-                            <span className={cn(
-                                "text-[9px] font-bold uppercase tracking-wider transition-all",
-                                isActive ? 'opacity-100' : 'opacity-70 font-medium'
-                            )}>
-                                {item.label}
-                            </span>
                         </button>
                     );
                 })}
-            </nav>
+            </motion.nav>
         </>
     );
 };

@@ -1,11 +1,18 @@
-import React from 'react';
-import { BookOpen, Video, Heart, MessageSquare, Search, Mic, Music, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import { BookOpen, Video, Heart, MessageSquare, Search, Mic, Music, MapPin, User as UserIcon } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { cn } from '../../utils/cn';
+import { useAuth } from '../../contexts/AuthContext';
+import { ProfileMenu } from './ProfileMenu';
 
 export const ToolsNavigation: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { user, profile } = useAuth();
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+    const firstName = profile?.first_name || profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuário';
+    const avatarUrl = profile?.avatar_url;
 
     const navItems = [
         { type: '/', label: 'Ler Texto', icon: <BookOpen />, category: 'Leitura & Vídeo' },
@@ -23,7 +30,7 @@ export const ToolsNavigation: React.FC = () => {
         { type: '/pregacao', label: 'Pregações', icon: <Mic size={20} /> },
         { type: '/comentario', label: 'Comentários', icon: <MessageSquare size={20} /> },
         { type: '/louvor', label: 'Louvores', icon: <Music size={20} /> },
-        { type: '/mapa', label: 'Mapas', icon: <MapPin size={20} /> },
+        { type: 'perfil', label: 'Perfil', isProfile: true },
     ];
 
     return (
@@ -58,9 +65,47 @@ export const ToolsNavigation: React.FC = () => {
             </nav>
 
             {/* Mobile Bottom Navigation */}
-            <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-200 px-2 py-2 flex items-center justify-around z-40 shadow-[0_-4px_16px_rgba(0,0,0,0.04)] pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+            <nav className="lg:hidden fixed bottom-1 left-4 right-4 bg-white/95 backdrop-blur-xl border border-slate-200/50 px-2 py-2 flex items-center justify-around z-40 shadow-[0_8px_32px_rgba(0,0,0,0.12)] rounded-[2rem] pb-2 safe-area-bottom">
                 {bottomNavItems.map((item) => {
                     const isActive = location.pathname === item.type;
+
+                    if (item.isProfile) {
+                        return (
+                            <div key="perfil" className="relative flex-1 flex flex-col items-center">
+                                <button
+                                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                                    className={cn(
+                                        "flex flex-col items-center justify-center gap-1 w-full px-1 py-1 rounded-xl transition-all duration-300",
+                                        isProfileOpen ? 'text-sky-500' : 'text-slate-400 active:scale-95'
+                                    )}
+                                >
+                                    <div className={cn(
+                                        "w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-black transition-all overflow-hidden border-2",
+                                        isProfileOpen || isActive ? 'border-sky-500 bg-sky-500 text-white shadow-lg shadow-sky-500/20 scale-110' : 'border-slate-100 bg-slate-100 text-slate-400'
+                                    )}>
+                                        {avatarUrl ? (
+                                            <img src={avatarUrl} alt={firstName} className="w-full h-full object-cover" />
+                                        ) : (
+                                            firstName.charAt(0).toUpperCase()
+                                        )}
+                                    </div>
+                                    <span className={cn(
+                                        "text-[9px] font-bold uppercase tracking-wider transition-all",
+                                        isProfileOpen || isActive ? 'opacity-100' : 'opacity-70 font-medium'
+                                    )}>
+                                        {item.label}
+                                    </span>
+                                </button>
+                                <ProfileMenu
+                                    isOpen={isProfileOpen}
+                                    onClose={() => setIsProfileOpen(false)}
+                                    onOpenFavorites={() => { /* This will be handled in Header or via a global state if needed, but for now we expect Header to have it */ }}
+                                    anchor="bottom"
+                                />
+                            </div>
+                        );
+                    }
+
                     return (
                         <button
                             key={item.type}
@@ -82,9 +127,6 @@ export const ToolsNavigation: React.FC = () => {
                             )}>
                                 {item.label}
                             </span>
-                            {isActive && (
-                                <div className="absolute top-0 w-8 h-1 bg-sky-500 rounded-full animate-in fade-in slide-in-from-top-1 duration-300" />
-                            )}
                         </button>
                     );
                 })}
@@ -92,3 +134,4 @@ export const ToolsNavigation: React.FC = () => {
         </>
     );
 };
+

@@ -241,6 +241,8 @@ export function ReadingProvider({ children }: { children: ReactNode }) {
     const getAtrasos = useCallback(() => {
         const hoje = new Date();
         hoje.setHours(0, 0, 0, 0);
+        const todayKey = String(hoje.getDate()).padStart(2, '0') + '/' + String(hoje.getMonth() + 1).padStart(2, '0');
+
         let count = 0;
 
         const iter = new Date(hoje.getFullYear(), 0, 1);
@@ -248,6 +250,9 @@ export function ReadingProvider({ children }: { children: ReactNode }) {
             const d = String(iter.getDate()).padStart(2, '0');
             const m = String(iter.getMonth() + 1).padStart(2, '0');
             const key = `${d}/${m}`;
+
+            // Double check: if it's today's key, skip even if condition managed to hit it
+            if (key === todayKey) break;
 
             if (READING_PLAN_2026[key] && !leiturasConcluidas.includes(key)) {
                 count++;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, CircleCheck as CheckCircle, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Zap, Loader2, Cloud, CloudOff, CircleAlert as AlertCircle, LogOut, User as UserIcon, Heart, Instagram, Search as SearchIcon } from 'lucide-react';
+import { Menu, CircleCheck as CheckCircle, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Zap, Loader2, Cloud, CloudOff, CircleAlert as AlertCircle, Search as SearchIcon, Heart } from 'lucide-react';
 import { useReading } from '../../contexts/ReadingContext';
 import { StoryMaker } from '../bible/StoryMaker';
 import { SearchTool } from './SearchTool';
@@ -8,14 +8,14 @@ import { BIBLE_MAP } from '../../data/bibleData';
 import { READING_PLAN_2026 } from '../../data/readingPlan';
 import { parseReadingPlan } from '../../services/bibleService';
 import { Favorito } from '../../types';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ProfileMenu } from './ProfileMenu';
 
 interface HeaderProps {
     onMenuClick: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
-    const { user, profile, signOut } = useAuth();
+    const { user, profile } = useAuth();
     const {
         dataNavegacao,
         setDataNavegacao,
@@ -36,7 +36,6 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     const [storyVerse, setStoryVerse] = useState<{ verse: string; ref: string } | null>(null);
 
     const handleGoToFavorite = (fav: Favorito) => {
-        // Find the day that contains this sigla and chapter
         const dayEntries = Object.entries(READING_PLAN_2026);
         for (const [key, plan] of dayEntries) {
             const queries = parseReadingPlan(plan);
@@ -52,12 +51,10 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
         }
     };
 
-    // Local state for inputs to allow editing
     const [dayPart, setDayPart] = useState('');
     const [monthPart, setMonthPart] = useState('');
     const [yearPart, setYearPart] = useState('');
 
-    // Sync inputs with global date changes
     useEffect(() => {
         if (!isNaN(dataNavegacao.getTime())) {
             const d = String(dataNavegacao.getDate()).padStart(2, '0');
@@ -100,7 +97,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     }, [dataNavegacao]);
 
     const firstName = profile?.first_name || profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuário';
-    const fullName = profile?.full_name || `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim() || firstName;
+    const avatarUrl = profile?.avatar_url;
 
     const handleMudarDia = (delta: number) => {
         const next = new Date(dataNavegacao);
@@ -154,7 +151,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     };
 
     return (
-        <header className="bg-white border-b border-slate-200 px-4 lg:px-6 py-2.5 lg:py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-2 lg:gap-4 z-[50] shadow-sm">
+        <header className="bg-white border-b border-slate-200 px-4 lg:px-6 py-2 lg:py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-2 lg:gap-4 z-[50] shadow-sm sticky top-0">
             <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-6 min-w-0 w-full lg:w-auto">
                 <div className="flex items-center gap-3 md:gap-4 min-w-0">
                     <button className="lg:hidden p-2 -ml-2 text-slate-400" onClick={onMenuClick}><Menu className="w-6 h-6" /></button>
@@ -165,13 +162,13 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                             <SyncIcon />
                         </div>
                     </div>
-                    <h1 className="text-xl md:text-2xl font-bold text-slate-900 truncate flex-1">{currentReadingFull}</h1>
+                    <h1 className="text-lg md:text-2xl font-bold text-slate-900 truncate flex-1">{currentReadingFull}</h1>
                 </div>
 
                 <div className="flex items-center gap-2 w-full lg:w-auto">
                     <button
                         onClick={() => toggleLeitura(currentKey)}
-                        className={`flex items-center justify-center gap-2 px-5 py-1.5 lg:py-2.5 rounded-xl font-bold text-xs transition-all flex-1 lg:flex-none ${leiturasConcluidas.includes(currentKey) ? 'bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm' : 'bg-sky-50 text-sky-600 border border-sky-200 hover:bg-sky-100'}`}
+                        className={`flex items-center justify-center gap-2 px-4 py-1.5 lg:py-2.5 rounded-xl font-bold text-xs transition-all flex-1 lg:flex-none ${leiturasConcluidas.includes(currentKey) ? 'bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm' : 'bg-sky-50 text-sky-600 border border-sky-200 hover:bg-sky-100'}`}
                     >
                         {leiturasConcluidas.includes(currentKey) ? <CheckCircle className="w-4 h-4" /> : <div className="w-4 h-4 rounded-full border-2 border-current" />}
                         {leiturasConcluidas.includes(currentKey) ? 'Concluída' : 'Marcar Lido'}
@@ -179,8 +176,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                 </div>
             </div>
 
-            <div className="flex items-center gap-2 lg:gap-3 justify-between lg:justify-end w-full lg:w-auto">
-                <div className="bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 lg:py-2 flex items-center justify-center min-w-[80px]">
+            <div className="flex items-center gap-2 lg:gap-3 flex-wrap lg:flex-nowrap justify-between lg:justify-end w-full lg:w-auto overflow-x-auto lg:overflow-visible no-scrollbar pb-1 lg:pb-0">
+                <div className="bg-slate-50 border border-slate-200 rounded-xl px-2 py-1.5 flex items-center justify-center min-w-[70px]">
                     <select className="bg-transparent text-[10px] md:text-xs font-bold text-sky-500 focus:outline-none cursor-pointer text-center w-full" value={versaoAtual} onChange={(e) => setVersaoAtual(e.target.value)}>
                         <option value="almeida">JFA</option><option value="kjv">KJV</option>
                     </select>
@@ -198,7 +195,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                     <button onClick={() => handleMudarDia(1)} className="p-1.5 text-slate-400 hover:text-sky-500 rounded-lg transition-all"><ChevronRight className="w-4 h-4" /></button>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                     <div className="relative shrink-0">
                         <button type="button" className="flex items-center justify-center p-2 bg-white border border-slate-200 text-slate-400 hover:text-sky-500 rounded-xl shadow-sm"><CalendarIcon className="w-4 h-4" /></button>
                         <input type="date" className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" onChange={handlePickerChange} />
@@ -211,107 +208,34 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                         <SearchIcon className="w-4 h-4" />
                     </button>
 
-                    <button onClick={() => setDataNavegacao(new Date())} className="flex items-center justify-center gap-2 px-3 py-2 bg-white border border-amber-300 text-amber-500 rounded-xl text-[10px] md:text-xs font-bold hover:bg-amber-50 transition-colors shadow-sm shrink-0">
-                        <Zap className="w-3.5 h-3.5 fill-current" /> <span className="hidden xl:inline">Hoje</span>
+                    <button onClick={() => setDataNavegacao(new Date())} className="flex items-center justify-center gap-1.5 px-3 py-2 bg-white border border-amber-300 text-amber-500 rounded-xl text-[10px] md:text-xs font-bold hover:bg-amber-50 transition-colors shadow-sm shrink-0">
+                        <Zap className="w-3.5 h-3.5 fill-current" /> <span className="hidden sm:inline">Hoje</span>
                     </button>
                 </div>
 
                 <div
-                    className="relative shrink-0 ml-1"
+                    className="relative shrink-0 ml-1 hidden lg:block"
                     onMouseLeave={() => setIsProfileOpen(false)}
                 >
                     <button
                         onClick={() => setIsProfileOpen(!isProfileOpen)}
                         className="flex items-center gap-2 p-1 lg:p-1 lg:pr-3 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-all group"
                     >
-                        <div className="w-8 h-8 rounded-lg bg-sky-500 text-white flex items-center justify-center text-xs font-black shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform">
-                            {firstName.charAt(0).toUpperCase()}
+                        <div className="w-8 h-8 rounded-lg bg-sky-500 text-white flex items-center justify-center text-xs font-black shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform overflow-hidden">
+                            {avatarUrl ? (
+                                <img src={avatarUrl} alt={firstName} className="w-full h-full object-cover" />
+                            ) : (
+                                firstName.charAt(0).toUpperCase()
+                            )}
                         </div>
                         <span className="text-xs font-bold text-slate-700 hidden lg:inline">{firstName}</span>
                     </button>
 
-                    <AnimatePresence>
-                        {isProfileOpen && (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                                className="absolute right-0 top-full pt-2 w-72 z-[100] pointer-events-auto"
-                            >
-                                <div className="bg-white border border-slate-100 rounded-[2rem] shadow-2xl overflow-hidden ring-1 ring-slate-900/5">
-                                    {/* Header do Perfil */}
-                                    <div className="p-6 pb-4 bg-slate-50/50 border-b border-slate-100 relative">
-                                        <div className="flex items-center gap-4 mb-4">
-                                            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-500 text-white flex items-center justify-center text-xl font-black shadow-xl shadow-sky-500/30">
-                                                {firstName.charAt(0).toUpperCase()}
-                                            </div>
-                                            <div className="min-w-0 text-left">
-                                                <p className="text-base font-black text-slate-900 truncate">{fullName}</p>
-                                                <p className="text-xs font-medium text-slate-500 truncate">{user?.email}</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-lg border border-emerald-100 w-fit">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                            <span className="text-[10px] font-black uppercase tracking-widest">Sincronização Ativada</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Menu de Opções */}
-                                    <div className="p-2">
-                                        <div className="px-3 py-2">
-                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1 text-left">Configurações</p>
-                                        </div>
-                                        <button className="w-full flex items-center justify-between px-4 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-2xl transition-all group">
-                                            <div className="flex items-center gap-3">
-                                                <div className="p-2 bg-slate-100 rounded-xl group-hover:bg-sky-100 group-hover:text-sky-600 transition-colors">
-                                                    <UserIcon className="w-4 h-4" />
-                                                </div>
-                                                Editar Perfil
-                                            </div>
-                                            <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
-                                        </button>
-                                        <button
-                                            onClick={() => setIsFavoritesOpen(true)}
-                                            className="w-full flex items-center justify-between px-4 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-2xl transition-all group"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div className="p-2 bg-slate-100 rounded-xl group-hover:bg-red-50 group-hover:text-red-500 transition-colors">
-                                                    <Heart className="w-4 h-4" />
-                                                </div>
-                                                Versículos Favoritos
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                {favoritos.length > 0 && <span className="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">{favoritos.length}</span>}
-                                                <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
-                                            </div>
-                                        </button>
-                                        <button className="w-full flex items-center justify-between px-4 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-2xl transition-all group">
-                                            <div className="flex items-center gap-3">
-                                                <div className="p-2 bg-slate-100 rounded-xl group-hover:bg-amber-100 group-hover:text-amber-600 transition-colors">
-                                                    <AlertCircle className="w-4 h-4" />
-                                                </div>
-                                                Outros Perfis / Contas
-                                            </div>
-                                            <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
-                                        </button>
-                                    </div>
-
-                                    <div className="px-2 pb-2 text-left">
-                                        <div className="h-px bg-slate-100 my-2 mx-2" />
-                                        <button
-                                            onClick={() => signOut()}
-                                            className="w-full flex items-center gap-3 px-4 py-3 text-xs font-bold text-red-500 hover:bg-red-50 rounded-2xl transition-all group"
-                                        >
-                                            <div className="p-2 bg-red-50 rounded-xl group-hover:bg-red-100 transition-colors">
-                                                <LogOut className="w-4 h-4" />
-                                            </div>
-                                            Desconectar Sessão
-                                        </button>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    <ProfileMenu
+                        isOpen={isProfileOpen}
+                        onClose={() => setIsProfileOpen(false)}
+                        onOpenFavorites={() => setIsFavoritesOpen(true)}
+                    />
                 </div>
             </div>
 
@@ -362,7 +286,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                                                         className="p-2 text-slate-300 hover:text-sky-500 hover:bg-sky-50 rounded-xl transition-all"
                                                         title="Compartilhar no Story"
                                                     >
-                                                        <Instagram className="w-4 h-4" />
+                                                        <SearchIcon className="w-4 h-4" />
                                                     </button>
                                                     <button
                                                         onClick={() => toggleFavorito(fav)}
@@ -406,7 +330,6 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                 isOpen={isSearchOpen}
                 onClose={() => setIsSearchOpen(false)}
                 onNavigate={(sigla, cap) => {
-                    // This logic will be handled better once we fix the navigation date issue
                     const dayEntries = Object.entries(READING_PLAN_2026);
                     for (const [key, plan] of dayEntries) {
                         const queries = parseReadingPlan(plan);
@@ -423,3 +346,4 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
         </header >
     );
 };
+

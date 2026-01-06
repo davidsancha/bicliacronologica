@@ -91,9 +91,9 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
             {/* Mobile Bottom Navigation */}
             <motion.nav
                 initial={{ y: 0 }}
-                animate={{ y: isVisible ? 0 : 100 }}
+                animate={{ y: isVisible ? 0 : 120 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
-                className="lg:hidden fixed bottom-4 left-4 right-4 bg-white/98 backdrop-blur-2xl border border-slate-200/50 px-2 py-4 flex items-center justify-around z-40 shadow-[0_20px_50px_rgba(0,0,0,0.2)] rounded-[2.5rem] safe-area-bottom border-t border-white/20"
+                className="lg:hidden fixed bottom-6 left-6 right-6 bg-slate-900 border border-slate-800 px-2 py-4 flex items-center justify-around z-50 shadow-[0_20px_50px_rgba(0,0,0,0.4)] rounded-[2.5rem] safe-area-bottom"
             >
                 {bottomNavItems.map((item) => {
                     const isActive = location.pathname === item.type;
@@ -109,8 +109,8 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
                                     )}
                                 >
                                     <div className={cn(
-                                        "w-9 h-9 rounded-xl flex items-center justify-center text-[10px] font-black transition-all overflow-hidden border-2",
-                                        isProfileOpen || isActive ? 'border-sky-500 bg-sky-500 text-white shadow-lg shadow-sky-500/20 scale-110' : 'border-slate-100 bg-slate-100 text-slate-400'
+                                        "w-9 h-9 rounded-full flex items-center justify-center text-[10px] font-black transition-all overflow-hidden border-2",
+                                        isProfileOpen || isActive ? 'border-sky-400 bg-sky-500 text-white shadow-lg shadow-sky-500/20 scale-110' : 'border-slate-800 bg-slate-800 text-slate-500'
                                     )}>
                                         {avatarUrl ? (
                                             <img src={avatarUrl} alt={firstName} className="w-full h-full object-cover" />
@@ -139,7 +139,7 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
                             onClick={() => navigate(item.type)}
                             className={cn(
                                 "flex flex-col items-center justify-center flex-1 py-1 transition-all duration-300",
-                                isActive ? 'text-sky-500' : 'text-slate-400 active:scale-90'
+                                isActive ? 'text-sky-400' : 'text-slate-500 active:scale-90'
                             )}
                         >
                             <div className={cn("transition-transform duration-300", isActive ? 'scale-110' : '')}>

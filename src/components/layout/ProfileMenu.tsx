@@ -33,7 +33,7 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ isOpen, onClose, onOpe
                         {/* Header do Perfil */}
                         <div className="p-6 pb-4 bg-slate-50/50 border-b border-slate-100 relative text-left">
                             <div className="flex items-center gap-4 mb-4">
-                                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-500 text-white flex items-center justify-center text-xl font-black shadow-xl shadow-sky-500/30 overflow-hidden">
+                                <div className="w-14 h-14 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-500 text-white flex items-center justify-center text-xl font-black shadow-xl shadow-sky-500/30 overflow-hidden">
                                     {avatarUrl ? (
                                         <img src={avatarUrl} alt={firstName} className="w-full h-full object-cover" />
                                     ) : (

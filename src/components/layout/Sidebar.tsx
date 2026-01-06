@@ -76,7 +76,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         exit={{ x: '-100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                         className={cn(
-                            "fixed lg:static inset-y-0 left-0 w-[300px] bg-white border-r border-slate-200 flex flex-col z-[60] shadow-2xl lg:shadow-none dark:bg-slate-900 dark:border-slate-800",
+                            "fixed lg:static inset-y-0 left-0 w-[300px] flex flex-col z-[60] transition-colors",
+                            isDesktop
+                                ? "bg-white border-r border-slate-200 lg:shadow-none"
+                                : "bg-sky-50 border-r border-sky-100 shadow-2xl",
                             !isOpen && !isDesktop ? "hidden" : "flex"
                         )}
                     >

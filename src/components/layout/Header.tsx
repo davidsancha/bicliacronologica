@@ -158,7 +158,7 @@ export const Header: React.FC<HeaderProps> = ({
     };
 
     return (
-        <header className="bg-white border-b border-slate-200 px-4 lg:px-6 py-2 lg:py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-2 lg:gap-4 z-[50] shadow-sm sticky top-0">
+        <header className="bg-sky-50 border-b border-sky-100 px-4 lg:px-6 py-3 flex flex-col lg:flex-row lg:items-center justify-between gap-4 z-[50] shadow-sm sticky top-0 transition-colors">
             <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-6 min-w-0 w-full lg:w-auto">
                 <div className="flex items-center gap-3 md:gap-4 min-w-0">
                     <button className="lg:hidden p-2 -ml-2 text-slate-400" onClick={onMenuClick}><Menu className="w-6 h-6" /></button>
@@ -172,10 +172,10 @@ export const Header: React.FC<HeaderProps> = ({
                     <h1 className="text-lg md:text-2xl font-bold text-slate-900 truncate flex-1">{currentReadingFull}</h1>
                 </div>
 
-                <div className="flex items-center gap-2 w-full lg:w-auto">
+                <div className="flex items-center gap-3 w-full lg:w-auto">
                     <button
                         onClick={() => toggleLeitura(currentKey)}
-                        className={`flex items-center justify-center gap-2 px-4 py-1.5 lg:py-2.5 rounded-xl font-bold text-xs transition-all flex-1 lg:flex-none ${leiturasConcluidas.includes(currentKey) ? 'bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm' : 'bg-sky-50 text-sky-600 border border-sky-200 hover:bg-sky-100'}`}
+                        className={`flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-bold text-xs transition-all flex-1 lg:flex-none ${leiturasConcluidas.includes(currentKey) ? 'bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm' : 'bg-amber-500 text-white shadow-lg shadow-amber-500/20 hover:bg-amber-600 active:scale-95'}`}
                     >
                         {leiturasConcluidas.includes(currentKey) ? <CheckCircle className="w-4 h-4" /> : <div className="w-4 h-4 rounded-full border-2 border-current" />}
                         {leiturasConcluidas.includes(currentKey) ? 'Concluída' : 'Marcar Lido'}
@@ -183,41 +183,43 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
             </div>
 
-            <div className="flex items-center gap-2 lg:gap-3 flex-wrap lg:flex-nowrap justify-between lg:justify-end w-full lg:w-auto overflow-x-auto lg:overflow-visible no-scrollbar pb-1 lg:pb-0">
-                <div className="bg-slate-50 border border-slate-200 rounded-xl px-2 py-1.5 flex items-center justify-center min-w-[70px]">
-                    <select className="bg-transparent text-[10px] md:text-xs font-bold text-sky-500 focus:outline-none cursor-pointer text-center w-full" value={versaoAtual} onChange={(e) => setVersaoAtual(e.target.value)}>
-                        <option value="almeida">JFA</option><option value="kjv">KJV</option>
-                    </select>
-                </div>
-
-                <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl p-0.5 shadow-sm min-w-max">
-                    <button onClick={() => handleMudarDia(-1)} className="p-1.5 text-slate-400 hover:text-sky-500 rounded-lg transition-all"><ChevronLeft className="w-4 h-4" /></button>
-                    <div className="flex items-center gap-0 px-1 select-none grow justify-center">
-                        <input type="text" value={dayPart} onFocus={(e) => e.target.select()} onChange={(e) => handleSegmentChange('day', e.target.value)} className="day-input bg-transparent text-[10px] md:text-xs font-bold text-slate-700 w-[2.2ch] text-center outline-none" />
-                        <span className="text-slate-300 font-bold mx-0.5">/</span>
-                        <input type="text" value={monthPart} onFocus={(e) => e.target.select()} onChange={(e) => handleSegmentChange('month', e.target.value)} className="month-input bg-transparent text-[10px] md:text-xs font-bold text-slate-700 w-[2.2ch] text-center outline-none" />
-                        <span className="text-slate-300 font-bold mx-0.5">/</span>
-                        <input type="text" value={yearPart} onFocus={(e) => e.target.select()} onChange={(e) => handleSegmentChange('year', e.target.value)} className="year-input bg-transparent text-[10px] md:text-xs font-bold text-slate-700 w-[4.2ch] text-center outline-none" />
-                    </div>
-                    <button onClick={() => handleMudarDia(1)} className="p-1.5 text-slate-400 hover:text-sky-500 rounded-lg transition-all"><ChevronRight className="w-4 h-4" /></button>
-                </div>
-
-                <div className="flex items-center gap-1.5">
-                    <div className="relative shrink-0">
-                        <button type="button" className="flex items-center justify-center p-2 bg-white border border-slate-200 text-slate-400 hover:text-sky-500 rounded-xl shadow-sm"><CalendarIcon className="w-4 h-4" /></button>
-                        <input type="date" className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" onChange={handlePickerChange} />
+            <div className="flex items-center gap-2 lg:gap-3 justify-between lg:justify-end w-full lg:w-auto overflow-x-auto no-scrollbar">
+                <div className="flex items-center gap-2 w-full lg:w-auto">
+                    <div className="bg-white/60 border border-sky-100 rounded-xl px-2 py-1.5 flex items-center justify-center min-w-[60px] shadow-sm">
+                        <select className="bg-transparent text-[10px] md:text-xs font-bold text-sky-500 focus:outline-none cursor-pointer text-center w-full" value={versaoAtual} onChange={(e) => setVersaoAtual(e.target.value)}>
+                            <option value="almeida">JFA</option><option value="kjv">KJV</option>
+                        </select>
                     </div>
 
-                    <button
-                        onClick={() => setIsSearchOpen(true)}
-                        className="flex items-center justify-center p-2 bg-white border border-slate-200 text-slate-400 hover:text-sky-500 rounded-xl shadow-sm transition-all hover:scale-105 active:scale-95"
-                    >
-                        <SearchIcon className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center bg-white/60 border border-sky-100 rounded-xl p-0.5 shadow-sm overflow-hidden">
+                        <button onClick={() => handleMudarDia(-1)} className="p-1.5 text-slate-400 hover:text-sky-500 transition-all"><ChevronLeft className="w-4 h-4" /></button>
+                        <div className="flex items-center gap-0 px-1 select-none">
+                            <input type="text" value={dayPart} onFocus={(e) => e.target.select()} onChange={(e) => handleSegmentChange('day', e.target.value)} className="day-input bg-transparent text-[10px] md:text-xs font-bold text-slate-700 w-[2.2ch] text-center outline-none" />
+                            <span className="text-slate-200 font-bold mx-0.5">/</span>
+                            <input type="text" value={monthPart} onFocus={(e) => e.target.select()} onChange={(e) => handleSegmentChange('month', e.target.value)} className="month-input bg-transparent text-[10px] md:text-xs font-bold text-slate-700 w-[2.2ch] text-center outline-none" />
+                            <span className="text-slate-200 font-bold mx-0.5">/</span>
+                            <input type="text" value={yearPart} onFocus={(e) => e.target.select()} onChange={(e) => handleSegmentChange('year', e.target.value)} className="year-input bg-transparent text-[10px] md:text-xs font-bold text-slate-700 w-[4.2ch] text-center outline-none" />
+                        </div>
+                        <button onClick={() => handleMudarDia(1)} className="p-1.5 text-slate-400 hover:text-sky-500 transition-all"><ChevronRight className="w-4 h-4" /></button>
+                    </div>
 
-                    <button onClick={() => setDataNavegacao(new Date())} className="flex items-center justify-center gap-1.5 px-3 py-2 bg-white border border-amber-300 text-amber-500 rounded-xl text-[10px] md:text-xs font-bold hover:bg-amber-50 transition-colors shadow-sm shrink-0">
-                        <Zap className="w-3.5 h-3.5 fill-current" /> <span className="hidden sm:inline">Hoje</span>
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                        <div className="relative shrink-0">
+                            <button type="button" className="flex items-center justify-center p-2 bg-white border border-sky-100 text-slate-400 hover:text-sky-500 rounded-xl shadow-sm"><CalendarIcon className="w-4 h-4" /></button>
+                            <input type="date" className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" onChange={handlePickerChange} />
+                        </div>
+
+                        <button
+                            onClick={() => setIsSearchOpen(true)}
+                            className="flex items-center justify-center p-2 bg-white border border-sky-100 text-slate-400 hover:text-sky-500 rounded-xl shadow-sm transition-all active:scale-95"
+                        >
+                            <SearchIcon className="w-4 h-4" />
+                        </button>
+
+                        <button onClick={() => setDataNavegacao(new Date())} className="flex items-center justify-center p-2 bg-white border border-amber-200 text-amber-500 rounded-xl hover:bg-amber-50 transition-colors shadow-sm active:scale-95">
+                            <Zap className="w-4 h-4 fill-current" />
+                        </button>
+                    </div>
                 </div>
 
                 <div

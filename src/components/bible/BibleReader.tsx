@@ -82,7 +82,15 @@ export const BibleReader: React.FC = () => {
     const isConcluido = leiturasConcluidas.includes(currentKey);
 
     return (
-        <div className="h-full scroll-smooth overflow-y-auto pb-40 lg:pb-32">
+        <div
+            className="h-full scroll-smooth overflow-y-auto pb-40 lg:pb-32"
+            onScroll={(e) => {
+                const target = e.currentTarget;
+                window.dispatchEvent(new CustomEvent('bible-scroll', {
+                    detail: { scrollTop: target.scrollTop }
+                }));
+            }}
+        >
             <InfographicTimeline currentDay={currentKey} />
             <div className="pt-8 px-6 md:px-12">
                 <div className="max-w-3xl mx-auto">
@@ -164,46 +172,73 @@ export const BibleReader: React.FC = () => {
                                     {cap.verses.map((v: any, vIdx: number) => {
                                         const favId = `${cap.meta.sigla}:${cap.meta.cap}:${v.verse}:${versaoAtual}`;
                                         const isFav = favoritos.some(f => f.id === favId);
+                                        const [activeVerse, setActiveVerse] = useState<string | null>(null);
+                                        const [lastTap, setLastTap] = useState(0);
+
+                                        const handleGesture = (id: string) => {
+                                            const now = Date.now();
+                                            if (now - lastTap < 300) {
+                                                setActiveVerse(activeVerse === id ? null : id);
+                                            }
+                                            setLastTap(now);
+                                        };
 
                                         return (
                                             <span
                                                 key={vIdx}
                                                 className={cn(
-                                                    "inline mr-2 group cursor-pointer transition-all px-1.5 py-0.5 rounded-lg relative",
-                                                    isFav ? "bg-rose-100/50 text-rose-900 border border-rose-200/50" : "hover:bg-slate-100/50"
+                                                    "inline mr-2 group cursor-pointer transition-all px-1.5 py-0.5 rounded-lg relative select-none",
+                                                    isFav ? "bg-rose-100/30 text-rose-900 ring-1 ring-rose-200/50" : "hover:bg-slate-100/30"
                                                 )}
-                                                onClick={() => toggleFavorito({
-                                                    id: favId,
-                                                    book_id: cap.meta.sigla,
-                                                    book_name: cap.bookName,
-                                                    chapter: cap.meta.cap,
-                                                    verse: v.verse,
-                                                    text: v.text.trim(),
-                                                    translation: versaoAtual
-                                                })}
+                                                onDoubleClick={() => setActiveVerse(activeVerse === favId ? null : favId)}
+                                                onClick={() => handleGesture(favId)}
                                             >
                                                 <sup className={cn(
                                                     "font-sans font-black mr-1 text-[11px] transition-colors",
-                                                    isFav ? "text-rose-600" : "text-sky-400/60 group-hover:text-sky-400"
+                                                    isFav ? "text-rose-500" : "text-sky-300 group-hover:text-sky-400"
                                                 )}>
                                                     {v.verse}
                                                 </sup>
                                                 {v.text.trim()}
-                                                <span className={cn(
-                                                    "inline-flex ml-1 transition-all gap-1.5",
-                                                    isFav ? "opacity-100 scale-110" : "opacity-0 group-hover:opacity-100 scale-75"
-                                                )}>
-                                                    <Heart className={cn("w-3.5 h-3.5", isFav ? "fill-red-600 text-red-600" : "text-slate-400")} />
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setStoryVerse({ verse: v.text.trim(), ref: `${cap.bookName} ${cap.meta.cap}:${v.verse}` });
-                                                        }}
-                                                        className="hover:scale-110 transition-transform"
-                                                    >
-                                                        <Instagram className="w-3.5 h-3.5 text-slate-400 hover:text-sky-500" />
-                                                    </button>
-                                                </span>
+
+                                                <AnimatePresence>
+                                                    {activeVerse === favId && (
+                                                        <motion.span
+                                                            initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                                                            animate={{ opacity: 1, y: -25, scale: 1 }}
+                                                            exit={{ opacity: 0, scale: 0.8 }}
+                                                            className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white/95 backdrop-blur-sm border border-slate-200 px-3 py-1.5 rounded-full shadow-xl z-20"
+                                                        >
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    toggleFavorito({
+                                                                        id: favId,
+                                                                        book_id: cap.meta.sigla,
+                                                                        book_name: cap.bookName,
+                                                                        chapter: cap.meta.cap,
+                                                                        verse: v.verse,
+                                                                        text: v.text.trim(),
+                                                                        translation: versaoAtual
+                                                                    });
+                                                                }}
+                                                                className="hover:scale-125 transition-transform"
+                                                            >
+                                                                <Heart className={cn("w-4 h-4", isFav ? "fill-red-500 text-red-500" : "text-slate-400")} />
+                                                            </button>
+                                                            <div className="w-px h-3 bg-slate-200" />
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setStoryVerse({ verse: v.text.trim(), ref: `${cap.bookName} ${cap.meta.cap}:${v.verse}` });
+                                                                }}
+                                                                className="hover:scale-125 transition-transform"
+                                                            >
+                                                                <Instagram className="w-4 h-4 text-slate-400 hover:text-sky-500" />
+                                                            </button>
+                                                        </motion.span>
+                                                    )}
+                                                </AnimatePresence>
                                             </span>
                                         );
                                     })}

@@ -173,26 +173,41 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onCl
                                             )}
                                         </div>
 
-                                        <label className="absolute bottom-0 right-0 p-2.5 bg-sky-500 text-white rounded-full shadow-lg cursor-pointer hover:bg-sky-600 active:scale-90 transition-all border-4 border-white">
-                                            <Camera className="w-4 h-4" />
+                                        <div className="absolute bottom-0 right-0 z-10">
+                                            <button
+                                                type="button"
+                                                onClick={() => document.getElementById('camera-input')?.click()}
+                                                className="p-2.5 bg-sky-500 text-white rounded-full shadow-lg cursor-pointer hover:bg-sky-600 active:scale-90 transition-all border-4 border-white"
+                                            >
+                                                <Camera className="w-4 h-4" />
+                                            </button>
                                             <input
+                                                id="camera-input"
                                                 type="file"
                                                 accept="image/*"
+                                                capture="user"
                                                 className="hidden"
                                                 onChange={handleFileSelect}
                                             />
-                                        </label>
+                                        </div>
                                     </div>
 
                                     <div className="text-center">
                                         <button
                                             type="button"
-                                            onClick={() => document.querySelector<HTMLInputElement>('input[type="file"]')?.click()}
+                                            onClick={() => document.getElementById('gallery-input')?.click()}
                                             className="text-xs font-black text-sky-500 uppercase tracking-widest hover:text-sky-600 transition-colors flex items-center gap-2"
                                         >
                                             <Upload className="w-3.5 h-3.5" />
                                             {formData.avatar_url ? 'Trocar Foto' : 'Inserir Foto de Perfil'}
                                         </button>
+                                        <input
+                                            id="gallery-input"
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={handleFileSelect}
+                                        />
                                         <p className="text-[10px] text-slate-400 mt-2 font-medium">PNG ou JPG até 5MB</p>
                                     </div>
                                 </div>

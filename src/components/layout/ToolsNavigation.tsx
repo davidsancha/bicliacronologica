@@ -31,8 +31,22 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
             setLastScrollY(currentScrollY);
         };
 
+        const handleBibleScroll = (e: any) => {
+            const currentScrollY = e.detail.scrollTop;
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                setIsVisible(false);
+            } else {
+                setIsVisible(true);
+            }
+            setLastScrollY(currentScrollY);
+        };
+
         window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
+        window.addEventListener('bible-scroll' as any, handleBibleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('bible-scroll' as any, handleBibleScroll);
+        };
     }, [lastScrollY]);
 
     const firstName = profile?.first_name || profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuário';
@@ -93,7 +107,7 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
                 initial={{ y: 0 }}
                 animate={{ y: isVisible ? 0 : 120 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
-                className="lg:hidden fixed bottom-6 left-6 right-6 bg-slate-900 border border-slate-800 px-2 py-4 flex items-center justify-around z-[60] shadow-[0_20px_50px_rgba(0,0,0,0.4)] rounded-[2.5rem] safe-area-bottom"
+                className="lg:hidden fixed bottom-6 left-6 right-6 bg-sky-50/95 backdrop-blur-md border border-sky-100 px-2 py-4 flex items-center justify-around z-[60] shadow-[0_20px_50px_rgba(14,165,233,0.15)] rounded-[2.5rem] safe-area-bottom transition-colors"
             >
                 {bottomNavItems.map((item) => {
                     const isActive = location.pathname === item.type;
@@ -105,12 +119,12 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
                                     onClick={() => setIsProfileOpen(!isProfileOpen)}
                                     className={cn(
                                         "flex flex-col items-center justify-center gap-1 w-full px-1 py-1 rounded-xl transition-all duration-300",
-                                        isProfileOpen ? 'text-sky-500' : 'text-slate-400 active:scale-95'
+                                        isProfileOpen ? 'text-rose-500' : 'text-slate-400 active:scale-95'
                                     )}
                                 >
                                     <div className={cn(
                                         "w-9 h-9 rounded-full flex items-center justify-center text-[10px] font-black transition-all overflow-hidden border-2",
-                                        isProfileOpen || isActive ? 'border-sky-400 bg-sky-500 text-white shadow-lg shadow-sky-500/20 scale-110' : 'border-slate-800 bg-slate-800 text-slate-500'
+                                        isProfileOpen || isActive ? 'border-rose-400 bg-rose-500 text-white shadow-lg shadow-rose-500/20 scale-110' : 'border-sky-100 bg-white text-slate-400 shadow-sm'
                                     )}>
                                         {avatarUrl ? (
                                             <img src={avatarUrl} alt={firstName} className="w-full h-full object-cover" />
@@ -138,16 +152,23 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
                             key={item.type}
                             onClick={() => navigate(item.type)}
                             className={cn(
-                                "flex flex-col items-center justify-center flex-1 py-1 transition-all duration-300",
-                                isActive ? 'text-sky-400' : 'text-slate-500 active:scale-90'
+                                "flex flex-col items-center justify-center flex-1 py-1 transition-all duration-300 relative",
+                                isActive ? 'text-rose-500' : 'text-slate-400 active:scale-90 shadow-none'
                             )}
                         >
-                            <div className={cn("transition-transform duration-300", isActive ? 'scale-110' : '')}>
+                            <div className={cn("transition-transform duration-300", isActive ? 'scale-110 drop-shadow-[0_0_8px_rgba(244,63,94,0.4)]' : '')}>
                                 {React.cloneElement(item.icon as React.ReactElement, {
                                     strokeWidth: isActive ? 3 : 2,
-                                    className: isActive ? 'drop-shadow-[0_0_8px_rgba(14,165,233,0.3)]' : ''
+                                    fill: isActive ? 'currentColor' : 'none'
                                 })}
                             </div>
+                            {isActive && (
+                                <motion.div
+                                    layoutId="activeTabMobile"
+                                    className="absolute -bottom-1 w-1 h-1 bg-rose-500 rounded-full"
+                                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                                />
+                            )}
                         </button>
                     );
                 })}

@@ -5,10 +5,15 @@ import { cn } from '../../utils/cn';
 import { useAuth } from '../../contexts/AuthContext';
 import { ProfileMenu } from './ProfileMenu';
 
-export const ToolsNavigation: React.FC = () => {
+interface ToolsNavigationProps {
+    onEditProfile?: () => void;
+    onOpenFavorites?: () => void;
+}
+
+export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile, onOpenFavorites }) => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { user, profile } = useAuth();
+    const { user, profile, isProfileComplete } = useAuth();
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
     const firstName = profile?.first_name || profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuário';
@@ -30,7 +35,7 @@ export const ToolsNavigation: React.FC = () => {
         { type: '/pregacao', label: 'Pregações', icon: <Mic size={20} /> },
         { type: '/comentario', label: 'Comentários', icon: <MessageSquare size={20} /> },
         { type: '/louvor', label: 'Louvores', icon: <Music size={20} /> },
-        { type: 'perfil', label: 'Perfil', isProfile: true },
+        { type: 'perfil', label: 'Guias', isProfile: true },
     ];
 
     return (
@@ -65,7 +70,7 @@ export const ToolsNavigation: React.FC = () => {
             </nav>
 
             {/* Mobile Bottom Navigation */}
-            <nav className="lg:hidden fixed bottom-1 left-4 right-4 bg-white/95 backdrop-blur-xl border border-slate-200/50 px-2 py-2 flex items-center justify-around z-40 shadow-[0_8px_32px_rgba(0,0,0,0.12)] rounded-[2rem] pb-2 safe-area-bottom">
+            <nav className="lg:hidden fixed bottom-1 left-4 right-4 bg-white/98 backdrop-blur-2xl border border-slate-200 px-2 py-2 flex items-center justify-around z-40 shadow-[0_12px_40px_rgba(0,0,0,0.15)] rounded-[2rem] pb-2 safe-area-bottom">
                 {bottomNavItems.map((item) => {
                     const isActive = location.pathname === item.type;
 
@@ -95,11 +100,15 @@ export const ToolsNavigation: React.FC = () => {
                                     )}>
                                         {item.label}
                                     </span>
+                                    {!isProfileComplete && (
+                                        <span className="absolute top-0 right-[25%] w-2 h-2 bg-amber-500 border-2 border-white rounded-full animate-bounce" />
+                                    )}
                                 </button>
                                 <ProfileMenu
                                     isOpen={isProfileOpen}
                                     onClose={() => setIsProfileOpen(false)}
-                                    onOpenFavorites={() => { /* This will be handled in Header or via a global state if needed, but for now we expect Header to have it */ }}
+                                    onOpenFavorites={() => onOpenFavorites?.()}
+                                    onEditProfile={onEditProfile}
                                     anchor="bottom"
                                 />
                             </div>

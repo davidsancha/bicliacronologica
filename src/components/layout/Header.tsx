@@ -12,10 +12,18 @@ import { ProfileMenu } from './ProfileMenu';
 
 interface HeaderProps {
     onMenuClick: () => void;
+    onEditProfile?: () => void;
+    isFavoritesOpen?: boolean;
+    setIsFavoritesOpen?: (open: boolean) => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
-    const { user, profile } = useAuth();
+export const Header: React.FC<HeaderProps> = ({
+    onMenuClick,
+    onEditProfile,
+    isFavoritesOpen,
+    setIsFavoritesOpen
+}) => {
+    const { user, profile, isProfileComplete } = useAuth();
     const {
         dataNavegacao,
         setDataNavegacao,
@@ -31,7 +39,6 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     } = useReading();
 
     const [isProfileOpen, setIsProfileOpen] = useState(false);
-    const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [storyVerse, setStoryVerse] = useState<{ verse: string; ref: string } | null>(null);
 
@@ -44,7 +51,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                 const [d, m] = key.split('/').map(Number);
                 const targetDate = new Date(2026, m - 1, d);
                 setDataNavegacao(targetDate);
-                setIsFavoritesOpen(false);
+                setIsFavoritesOpen?.(false);
                 setIsProfileOpen(false);
                 return;
             }
@@ -219,7 +226,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                 >
                     <button
                         onClick={() => setIsProfileOpen(!isProfileOpen)}
-                        className="flex items-center gap-2 p-1 lg:p-1 lg:pr-3 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-all group"
+                        className="flex items-center gap-2 p-1 lg:p-1 lg:pr-3 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-all group relative"
                     >
                         <div className="w-8 h-8 rounded-lg bg-sky-500 text-white flex items-center justify-center text-xs font-black shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform overflow-hidden">
                             {avatarUrl ? (
@@ -229,12 +236,17 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                             )}
                         </div>
                         <span className="text-xs font-bold text-slate-700 hidden lg:inline">{firstName}</span>
+
+                        {!isProfileComplete && (
+                            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-500 border-2 border-white rounded-full animate-bounce" />
+                        )}
                     </button>
 
                     <ProfileMenu
                         isOpen={isProfileOpen}
                         onClose={() => setIsProfileOpen(false)}
-                        onOpenFavorites={() => setIsFavoritesOpen(true)}
+                        onOpenFavorites={() => setIsFavoritesOpen?.(true)}
+                        onEditProfile={onEditProfile}
                     />
                 </div>
             </div>
@@ -256,7 +268,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2">{favoritos.length} Versículos Guardados</p>
                                 </div>
                                 <button
-                                    onClick={() => setIsFavoritesOpen(false)}
+                                    onClick={() => setIsFavoritesOpen?.(false)}
                                     className="p-3 bg-white border border-slate-200 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-2xl transition-all"
                                 >
                                     <Zap className="w-5 h-5 rotate-45" />

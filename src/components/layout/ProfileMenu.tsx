@@ -8,11 +8,12 @@ interface ProfileMenuProps {
     isOpen: boolean;
     onClose: () => void;
     onOpenFavorites: () => void;
+    onEditProfile?: () => void;
     anchor?: 'top' | 'bottom';
 }
 
-export const ProfileMenu: React.FC<ProfileMenuProps> = ({ isOpen, onClose, onOpenFavorites, anchor = 'top' }) => {
-    const { user, profile, signOut } = useAuth();
+export const ProfileMenu: React.FC<ProfileMenuProps> = ({ isOpen, onClose, onOpenFavorites, onEditProfile, anchor = 'top' }) => {
+    const { user, profile, isProfileComplete, signOut } = useAuth();
     const { favoritos } = useReading();
 
     const firstName = profile?.first_name || profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuário';
@@ -48,6 +49,23 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ isOpen, onClose, onOpe
                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                 <span className="text-[10px] font-black uppercase tracking-widest">Sincronização Ativada</span>
                             </div>
+
+                            {!isProfileComplete && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    onClick={() => {
+                                        onEditProfile?.();
+                                        onClose();
+                                    }}
+                                    className="mt-4 p-3 bg-amber-50 rounded-2xl border border-amber-100 cursor-pointer hover:bg-amber-100/50 transition-colors"
+                                >
+                                    <p className="text-[10px] font-black text-amber-600 uppercase tracking-wider mb-1">Perfil Incompleto</p>
+                                    <p className="text-[11px] font-medium text-amber-700/80 leading-relaxed">
+                                        Adicione sua data de nascimento e foto para uma experiência completa.
+                                    </p>
+                                </motion.div>
+                            )}
                         </div>
 
                         {/* Menu de Opções */}
@@ -55,7 +73,13 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({ isOpen, onClose, onOpe
                             <div className="px-3 py-2 text-left">
                                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Configurações</p>
                             </div>
-                            <button className="w-full flex items-center justify-between px-4 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-2xl transition-all group">
+                            <button
+                                onClick={() => {
+                                    onEditProfile?.();
+                                    onClose();
+                                }}
+                                className="w-full flex items-center justify-between px-4 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-2xl transition-all group"
+                            >
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 bg-slate-100 rounded-xl group-hover:bg-sky-100 group-hover:text-sky-600 transition-colors">
                                         <UserIcon className="w-4 h-4" />

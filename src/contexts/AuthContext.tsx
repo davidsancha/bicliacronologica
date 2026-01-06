@@ -6,11 +6,15 @@ interface AuthContextType {
     user: User | null;
     session: Session | null;
     profile: any | null;
+    isProfileComplete: boolean;
     loading: boolean;
+    showWelcomeModal: boolean;
+    setShowWelcomeModal: (show: boolean) => void;
     signIn: (email: string) => Promise<void>; // Magic Link
     signInWithPassword: (email: string, password: string) => Promise<void>;
     signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
     signOut: () => Promise<void>;
+    updateProfile: (updates: any) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,6 +24,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [session, setSession] = useState<Session | null>(null);
     const [profile, setProfile] = useState<any | null>(null);
     const [loading, setLoading] = useState(true);
+    const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+
+    const isProfileComplete = !!(
+        profile?.first_name &&
+        profile?.last_name &&
+        profile?.birth_date &&
+        profile?.avatar_url
+    );
 
     useEffect(() => {
         if (!supabase) {
@@ -127,13 +139,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                         last_name: lastName,
                         updated_at: new Date().toISOString(),
                     },
-                ]).select(); // Upsert is handled by RLS/constraints usually, but insert works for new users
+                ]).select();
 
-            if (profileError) {
-                // If profile creation fails (e.g. trigger already created it), we might want to update it
-                // or just ignore if it exists. 
+            if (!profileError) {
+                setShowWelcomeModal(true);
+            } else {
                 console.log("Profile upsert result:", profileError);
+                // Even if profile exists, we show welcome modal for new sign ups
+                setShowWelcomeModal(true);
             }
+        }
+    };
+
+    const updateProfile = async (updates: any) => {
+        if (!user || !supabase) return;
+
+        try {
+            const { error } = await supabase
+                .from('profiles')
+                .update({
+                    ...updates,
+                    updated_at: new Date().toISOString(),
+                })
+                .eq('id', user.id);
+
+            if (error) throw error;
+
+            // Refresh profile
+            await fetchProfile(user.id);
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            throw error;
         }
     };
 
@@ -148,7 +184,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ user, session, profile, loading, signIn, signInWithPassword, signUp, signOut }}>
+        <AuthContext.Provider value={{
+            user,
+            session,
+            profile,
+            isProfileComplete,
+            loading,
+            showWelcomeModal,
+            setShowWelcomeModal,
+            signIn,
+            signInWithPassword,
+            signUp,
+            signOut,
+            updateProfile
+        }}>
             {children}
         </AuthContext.Provider>
     );

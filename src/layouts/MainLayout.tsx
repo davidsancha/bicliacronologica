@@ -5,6 +5,9 @@ import { ToolsNavigation } from '../components/layout/ToolsNavigation';
 import { useReading } from '../contexts/ReadingContext';
 import { AlertTriangle } from 'lucide-react';
 import { READING_PLAN_2026 } from '../data/readingPlan';
+import { useAuth } from '../contexts/AuthContext';
+import { WelcomeModal } from '../components/profile/WelcomeModal';
+import { EditProfileModal } from '../components/profile/EditProfileModal';
 
 interface MainLayoutProps {
     children: React.ReactNode;
@@ -12,7 +15,10 @@ interface MainLayoutProps {
 
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+    const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
     const { getAtrasos, leiturasConcluidas, setDataNavegacao } = useReading();
+    const { profile, showWelcomeModal, setShowWelcomeModal } = useAuth();
     const atrasos = getAtrasos();
 
     const handleIrParaAtraso = () => {
@@ -48,15 +54,38 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     </div>
                 )}
 
-                <Header onMenuClick={() => setIsSidebarOpen(true)} />
+                <Header
+                    onMenuClick={() => setIsSidebarOpen(true)}
+                    onEditProfile={() => setIsEditProfileOpen(true)}
+                    isFavoritesOpen={isFavoritesOpen}
+                    setIsFavoritesOpen={setIsFavoritesOpen}
+                />
 
                 <div className="flex-1 flex overflow-hidden">
-                    <ToolsNavigation />
+                    <ToolsNavigation
+                        onEditProfile={() => setIsEditProfileOpen(true)}
+                        onOpenFavorites={() => setIsFavoritesOpen(true)}
+                    />
                     <div className="flex-1 overflow-hidden relative">
                         {children}
                     </div>
                 </div>
             </main>
+
+            <WelcomeModal
+                isOpen={showWelcomeModal}
+                onClose={() => setShowWelcomeModal(false)}
+                onCompleteProfile={() => {
+                    setShowWelcomeModal(false);
+                    setIsEditProfileOpen(true);
+                }}
+                userName={profile?.first_name || 'Usuário'}
+            />
+
+            <EditProfileModal
+                isOpen={isEditProfileOpen}
+                onClose={() => setIsEditProfileOpen(false)}
+            />
         </div>
     );
 };

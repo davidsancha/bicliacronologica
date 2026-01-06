@@ -92,7 +92,7 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
             <div className="relative bg-white w-full max-w-5xl h-[92vh] lg:h-[90vh] max-h-[900px] rounded-t-[2.5rem] lg:rounded-[3rem] shadow-2xl flex flex-col lg:flex-row overflow-hidden animate-in slide-in-from-bottom-10 lg:zoom-in-95 duration-300 translate-y-2 lg:translate-y-0">
                 {/* Preview Area */}
                 <div className="bg-slate-200/50 flex items-center justify-center p-2 xs:p-4 lg:p-12 overflow-hidden lg:overflow-visible min-h-[340px] xs:min-h-[380px] lg:min-h-[400px] lg:flex-1 shrink-0">
-                    <div className="relative group/preview scale-[0.45] xs:scale-[0.5] sm:scale-[0.6] lg:scale-[0.8] xl:scale-85 origin-center transition-transform duration-500">
+                    <div className="relative group/preview scale-[0.55] xs:scale-[0.6] sm:scale-[0.7] lg:scale-[0.8] xl:scale-85 origin-center transition-transform duration-500">
                         {/* Aspect Ratio Container for Export */}
                         <div
                             ref={storyRef}
@@ -159,13 +159,12 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                 </div>
 
                 {/* Controls Area */}
-                <div className="w-full lg:w-[400px] bg-white p-5 lg:p-10 border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col overflow-hidden flex-1 lg:flex-none">
-                    <div className="flex items-center justify-between mb-3 lg:mb-8">
+                <div className="w-full lg:w-[400px] bg-white p-4 lg:p-10 border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col overflow-hidden shrink-0 lg:flex-none h-full max-h-[45vh] lg:max-h-none">
+                    <div className="flex items-center justify-between mb-4 lg:mb-8">
                         <div>
-                            <h3 className="text-lg lg:text-2xl font-black text-slate-900 flex items-center gap-2 lg:gap-3">
+                            <h3 className="text-base lg:text-2xl font-black text-slate-900 flex items-center gap-2 lg:gap-3">
                                 <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-amber-500 fill-current" /> Share Story
                             </h3>
-                            <p className="text-[9px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Personalize seu card</p>
                         </div>
                         <button onClick={onClose} className="p-2 lg:p-3 hover:bg-slate-100 rounded-2xl transition-all text-slate-300 hover:text-slate-600">
                             <X className="w-5 h-5 lg:w-6 lg:h-6" />
@@ -173,15 +172,15 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                     </div>
 
                     <div className="flex-1 flex flex-col overflow-hidden">
-                        <div className="flex-1 overflow-y-auto no-scrollbar pr-1 mb-4 lg:mb-6">
+                        <div className="flex-1 overflow-y-auto lg:overflow-y-auto no-scrollbar pr-1 mb-4 lg:mb-6">
                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Escolha o Tema</p>
-                            <div className="grid grid-cols-2 lg:grid-cols-2 gap-3 lg:gap-4">
+                            <div className="flex lg:grid lg:grid-cols-2 gap-3 lg:gap-4 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 no-scrollbar">
                                 {BACKGROUNDS.map((bg) => (
                                     <button
                                         key={bg.id}
                                         onClick={() => setSelectedBg(bg)}
                                         className={cn(
-                                            "group relative aspect-[3/4] rounded-2xl overflow-hidden border-2 transition-all p-1",
+                                            "group relative aspect-[3/4] w-24 lg:w-auto shrink-0 lg:shrink-1 rounded-2xl overflow-hidden border-2 transition-all p-1",
                                             selectedBg.id === bg.id ? "border-sky-500 shadow-lg shadow-sky-500/20 scale-105" : "border-slate-50 hover:border-slate-200"
                                         )}
                                     >
@@ -189,8 +188,8 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                                             className={cn("w-full h-full rounded-xl bg-cover bg-center shadow-inner", bg.className)}
                                             style={bg.url ? { backgroundImage: `url(${bg.url})` } : {}}
                                         />
-                                        <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
-                                            <p className="text-[9px] font-black text-white text-center uppercase tracking-widest leading-none">
+                                        <div className="absolute inset-x-0 bottom-0 p-1.5 bg-gradient-to-t from-black/80 to-transparent">
+                                            <p className="text-[8px] lg:text-[9px] font-black text-white text-center uppercase tracking-widest leading-none">
                                                 {bg.label}
                                             </p>
                                         </div>
@@ -199,19 +198,16 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                             </div>
                         </div>
 
-                        <div className="space-y-4 pt-4 border-t border-slate-50">
-                            <div className="flex items-center justify-between px-2">
-                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Efeitos</p>
-                            </div>
+                        <div className="space-y-3 pt-3 border-t border-slate-50">
                             <button
                                 onClick={() => setShowGreeting(!showGreeting)}
                                 className={cn(
-                                    "w-full flex items-center justify-between px-5 py-3.5 rounded-2xl border-2 transition-all group",
+                                    "w-full flex items-center justify-between px-4 py-2.5 rounded-2xl border-2 transition-all group",
                                     showGreeting ? "bg-emerald-50 border-emerald-100 text-emerald-700" : "bg-slate-50 border-slate-100 text-slate-500"
                                 )}
                             >
-                                <div className="flex items-center gap-2.5 font-bold text-[10px] uppercase tracking-wider">
-                                    <div className={cn("p-1.5 rounded-lg transition-colors", showGreeting ? "bg-emerald-500 text-white" : "bg-slate-200 text-slate-400")}>
+                                <div className="flex items-center gap-2.5 font-bold text-[9px] lg:text-[10px] uppercase tracking-wider">
+                                    <div className={cn("p-1 rounded-lg transition-colors", showGreeting ? "bg-emerald-500 text-white" : "bg-slate-200 text-slate-400")}>
                                         <Zap className="w-3 h-3 fill-current" />
                                     </div>
                                     Bom Dia
@@ -222,11 +218,11 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                             </button>
                         </div>
 
-                        <div className="mt-2 lg:mt-8 pt-2 lg:pt-6">
+                        <div className="mt-4 lg:mt-8">
                             <button
                                 onClick={handleShare}
                                 disabled={loading}
-                                className="w-full py-4 lg:py-5 bg-gradient-to-r from-purple-600 to-rose-500 text-white rounded-[1.25rem] lg:rounded-[2rem] font-black text-sm lg:text-base flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-xl lg:shadow-2xl shadow-rose-500/20 disabled:opacity-50"
+                                className="w-full py-4 lg:py-5 bg-gradient-to-r from-purple-600 to-rose-500 text-white rounded-2xl lg:rounded-[2rem] font-black text-sm lg:text-base flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-xl lg:shadow-2xl shadow-rose-500/20 disabled:opacity-50"
                             >
                                 {loading ? <Loader2 className="w-5 h-5 lg:w-6 lg:h-6 animate-spin text-white" /> : <Instagram className="w-5 h-5 lg:w-6 lg:h-6" />}
                                 Compartilhar Story

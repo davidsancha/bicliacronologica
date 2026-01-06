@@ -34,7 +34,12 @@ const VerseItem: React.FC<VerseItemProps> = ({
     setActiveVerse
 }) => {
     const favId = `${cap.meta.sigla}:${cap.meta.cap}:${v.verse}:${versaoAtual}`;
-    const isFav = favoritos.some(f => f.id === favId);
+    const isFav = favoritos.some(f =>
+        f.book_id === cap.meta.sigla &&
+        f.chapter === cap.meta.cap &&
+        f.verse === v.verse &&
+        f.translation === versaoAtual
+    );
     const [lastTap, setLastTap] = useState(0);
 
     const handleGesture = (e: React.MouseEvent | React.TouchEvent) => {
@@ -71,9 +76,9 @@ const VerseItem: React.FC<VerseItemProps> = ({
                 {activeVerse === favId && (
                     <motion.span
                         initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                        animate={{ opacity: 1, y: -25, scale: 1 }}
+                        animate={{ opacity: 1, y: -45, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
-                        className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white/95 backdrop-blur-sm border border-slate-200 px-3 py-1.5 rounded-full shadow-xl z-20"
+                        className="absolute left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white/95 backdrop-blur-md border border-slate-200 px-5 py-3 rounded-full shadow-2xl z-50 ring-1 ring-slate-200"
                     >
                         <button
                             onClick={(e) => {
@@ -88,19 +93,19 @@ const VerseItem: React.FC<VerseItemProps> = ({
                                     translation: versaoAtual
                                 });
                             }}
-                            className="hover:scale-125 transition-transform"
+                            className="hover:scale-110 active:scale-95 transition-all p-1"
                         >
-                            <Heart className={cn("w-4 h-4", isFav ? "fill-red-500 text-red-500" : "text-slate-400")} />
+                            <Heart className={cn("w-8 h-8", isFav ? "fill-red-500 text-red-500" : "text-slate-400")} />
                         </button>
-                        <div className="w-px h-3 bg-slate-200" />
+                        <div className="w-px h-6 bg-slate-200" />
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setStoryVerse({ verse: v.text.trim(), ref: `${cap.bookName} ${cap.meta.cap}:${v.verse}` });
                             }}
-                            className="hover:scale-125 transition-transform"
+                            className="hover:scale-110 active:scale-95 transition-all p-1"
                         >
-                            <Instagram className="w-4 h-4 text-slate-400 hover:text-sky-500" />
+                            <Instagram className="w-8 h-8 text-slate-400 hover:text-sky-500" />
                         </button>
                     </motion.span>
                 )}
@@ -274,7 +279,7 @@ export const BibleReader: React.FC = () => {
                                     )}
                                 </div>
 
-                                <div className="font-serif text-xl leading-[2.2] text-slate-700 space-y-4 text-justify">
+                                <div className="font-serif text-xl leading-[2.2] text-slate-700 space-y-4">
                                     {cap.verses.map((v: any, vIdx: number) => (
                                         <VerseItem
                                             key={vIdx}

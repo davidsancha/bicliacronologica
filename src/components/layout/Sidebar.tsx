@@ -79,7 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                             "fixed lg:static inset-y-0 left-0 w-[300px] flex flex-col z-[60] transition-colors",
                             isDesktop
                                 ? "bg-white border-r border-slate-200 lg:shadow-none"
-                                : "bg-sky-50 border-r border-sky-100 shadow-2xl",
+                                : "bg-gradient-to-br from-sky-100 to-sky-50 border-r border-sky-200 shadow-2xl",
                             !isOpen && !isDesktop ? "hidden" : "flex"
                         )}
                     >

@@ -158,7 +158,7 @@ export const Header: React.FC<HeaderProps> = ({
     };
 
     return (
-        <header className="bg-gradient-to-b from-sky-50/50 to-white border-b border-sky-100 px-4 lg:px-6 py-3 flex flex-col lg:flex-row lg:items-center justify-between gap-4 z-[50] shadow-sm sticky top-0 transition-colors">
+        <header className="bg-gradient-to-b from-sky-100/50 via-sky-50/30 to-white border-b border-sky-100 px-4 lg:px-6 py-3 flex flex-col lg:flex-row lg:items-center justify-between gap-4 z-[50] shadow-sm sticky top-0 transition-colors">
             <div className="flex flex-col lg:flex-row lg:items-center gap-2 lg:gap-6 min-w-0 w-full lg:w-auto">
                 <div className="flex items-center gap-3 md:gap-4 min-w-0">
                     <button className="lg:hidden p-2 -ml-2 text-slate-400" onClick={onMenuClick}><Menu className="w-6 h-6" /></button>

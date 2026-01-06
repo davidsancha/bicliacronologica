@@ -1,0 +1,240 @@
+import React, { useRef, useState } from 'react';
+import { toPng } from 'html-to-image';
+import { X, Instagram, Sparkles, Quote, Loader2, Zap } from 'lucide-react';
+import { cn } from '../../utils/cn';
+
+interface StoryMakerProps {
+    verse: string;
+    reference: string;
+    onClose: () => void;
+}
+
+interface StoryBackground {
+    id: string;
+    url?: string;
+    className?: string;
+    label: string;
+    textColor: 'light' | 'dark';
+}
+
+const BACKGROUNDS: StoryBackground[] = [
+    { id: 'beige', url: '/assets/stories/bg-beige.png', label: 'Minimalista', textColor: 'dark' },
+    { id: 'nature', url: '/assets/stories/bg-nature.png', label: 'Natureza', textColor: 'dark' },
+    { id: 'ethereal', url: '/assets/stories/bg-abstract.png', label: 'Etéreo', textColor: 'dark' },
+    { id: 'ocean', url: '/assets/stories/bg-ocean.png', label: 'Oceano', textColor: 'light' },
+    { id: 'mountain', url: '/assets/stories/bg-mountain.png', label: 'Montanha', textColor: 'light' },
+    { id: 'forest', url: '/assets/stories/bg-forest.png', label: 'Floresta', textColor: 'light' },
+    { id: 'sunset', url: '/assets/stories/bg-sunset.png', label: 'Poente', textColor: 'light' },
+    { id: 'cosmos', url: '/assets/stories/bg-stars.png', label: 'Cósmico', textColor: 'light' },
+    { id: 'coffee', url: '/assets/stories/bg-coffee.png', label: 'Conforto', textColor: 'light' },
+    { id: 'parchment', url: '/assets/stories/bg-vintage.png', label: 'História', textColor: 'dark' },
+    { id: 'marble', url: '/assets/stories/bg-marble.png', label: 'Pureza', textColor: 'dark' },
+    { id: 'watercolor', url: '/assets/stories/bg-watercolor.png', label: 'Artesanal', textColor: 'dark' },
+    { id: 'linen', url: '/assets/stories/bg-linen.png', label: 'Sutileza', textColor: 'dark' },
+    { id: 'lavender', url: '/assets/stories/bg-lavender.png', label: 'Lavanda', textColor: 'light' },
+];
+
+export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClose }) => {
+    const [selectedBg, setSelectedBg] = useState(BACKGROUNDS[0]);
+    const [showGreeting, setShowGreeting] = useState(true);
+    const storyRef = useRef<HTMLDivElement>(null);
+    const [loading, setLoading] = useState(false);
+
+    // Calculate optimal font size based on verse length
+    const getFontSize = (text: string) => {
+        const length = text.length;
+        if (length > 400) return 'text-lg';
+        if (length > 250) return 'text-xl';
+        if (length > 150) return 'text-2xl';
+        return 'text-3xl';
+    };
+
+    const handleShare = async () => {
+        if (!storyRef.current) return;
+        setLoading(true);
+        try {
+            const dataUrl = await toPng(storyRef.current, {
+                quality: 1,
+                pixelRatio: 2,
+                cacheBust: true,
+            });
+
+            if (navigator.share) {
+                const blob = await (await fetch(dataUrl)).blob();
+                const file = new File([blob], 'story.png', { type: 'image/png' });
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: 'Versículo do Dia',
+                        text: 'Compartilhado via Jornada Bíblica 2026',
+                    });
+                    return;
+                } catch (shareError) {
+                    console.log('Share error or cancelled:', shareError);
+                }
+            }
+
+            const link = document.createElement('a');
+            link.download = `jornada-story-${reference.replace(/\s/g, '-')}.png`;
+            link.href = dataUrl;
+            link.click();
+        } catch (err) {
+            console.error('Erros ao gerar imagem:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-md" onClick={onClose} />
+
+            <div className="relative bg-white w-full max-w-5xl h-[92vh] lg:h-[90vh] max-h-[900px] rounded-t-[2.5rem] lg:rounded-[3rem] shadow-2xl flex flex-col lg:flex-row overflow-hidden animate-in slide-in-from-bottom-10 lg:zoom-in-95 duration-300 translate-y-2 lg:translate-y-0">
+                {/* Preview Area */}
+                <div className="bg-slate-200/50 flex items-center justify-center p-2 xs:p-4 lg:p-12 overflow-hidden lg:overflow-visible min-h-[340px] xs:min-h-[380px] lg:min-h-[400px] lg:flex-1 shrink-0">
+                    <div className="relative group/preview scale-[0.45] xs:scale-[0.5] sm:scale-[0.6] lg:scale-[0.8] xl:scale-85 origin-center transition-transform duration-500">
+                        {/* Aspect Ratio Container for Export */}
+                        <div
+                            ref={storyRef}
+                            className={cn(
+                                "relative w-[405px] h-[720px] bg-cover bg-center rounded-2xl overflow-hidden shadow-2xl flex flex-col items-center",
+                                selectedBg.className || ""
+                            )}
+                            style={selectedBg.url ? { backgroundImage: `url(${selectedBg.url})` } : {}}
+                        >
+                            {/* Content Wrapper */}
+                            <div className="relative z-10 w-full h-full flex flex-col items-center px-8 py-14">
+                                {/* Top Section: Greeting - Positioned higher */}
+                                <div className="h-16 flex items-center justify-center mt-2">
+                                    {showGreeting && (
+                                        <h4 className={cn(
+                                            "font-serif italic text-4xl tracking-tight drop-shadow-md animate-in fade-in slide-in-from-top-4 duration-1000",
+                                            selectedBg.textColor === 'light' ? "text-white" : "text-slate-800"
+                                        )}>Bom dia</h4>
+                                    )}
+                                </div>
+
+                                {/* Middle Section: Verse Area - Larger and centered */}
+                                <div className="flex-1 flex flex-col items-center justify-center w-full mt-4">
+                                    <div className={cn(
+                                        "p-10 rounded-[2.5rem] w-full flex flex-col items-center justify-center text-center transition-all duration-500 min-h-[400px]",
+                                        selectedBg.textColor === 'light' ? "bg-black/5 backdrop-blur-[2px]" : "bg-white/5 backdrop-blur-[2px]"
+                                    )}>
+                                        <Quote className={cn(
+                                            "w-10 h-10 mb-8",
+                                            selectedBg.textColor === 'light' ? "text-white/20" : "text-slate-800/10"
+                                        )} />
+                                        <p className={cn(
+                                            "font-serif leading-relaxed font-medium tracking-tight drop-shadow-lg",
+                                            getFontSize(verse),
+                                            selectedBg.textColor === 'light' ? "text-white" : "text-slate-800"
+                                        )}>
+                                            "{verse}"
+                                        </p>
+                                        <div className={cn(
+                                            "h-0.5 w-16 shadow-sm mt-10 rounded-full",
+                                            selectedBg.textColor === 'light' ? "bg-white/40" : "bg-slate-800/20"
+                                        )} />
+                                        <p className={cn(
+                                            "font-sans text-[11px] font-black uppercase tracking-[0.4em] mt-8 drop-shadow-sm opacity-80",
+                                            selectedBg.textColor === 'light' ? "text-white" : "text-slate-800"
+                                        )}>
+                                            {reference}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Bottom Section: Branding */}
+                                <div className="h-10 mt-6 flex items-end justify-center">
+                                    <p className={cn(
+                                        "text-[9px] font-black uppercase tracking-[0.4em] drop-shadow-md opacity-80",
+                                        selectedBg.textColor === 'light' ? "text-white" : "text-slate-800"
+                                    )}>
+                                        @jornada_biblica_2026
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Controls Area */}
+                <div className="w-full lg:w-[400px] bg-white p-5 lg:p-10 border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col overflow-hidden flex-1 lg:flex-none">
+                    <div className="flex items-center justify-between mb-3 lg:mb-8">
+                        <div>
+                            <h3 className="text-lg lg:text-2xl font-black text-slate-900 flex items-center gap-2 lg:gap-3">
+                                <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-amber-500 fill-current" /> Share Story
+                            </h3>
+                            <p className="text-[9px] lg:text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Personalize seu card</p>
+                        </div>
+                        <button onClick={onClose} className="p-2 lg:p-3 hover:bg-slate-100 rounded-2xl transition-all text-slate-300 hover:text-slate-600">
+                            <X className="w-5 h-5 lg:w-6 lg:h-6" />
+                        </button>
+                    </div>
+
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                        <div className="flex-1 overflow-y-auto no-scrollbar pr-1 mb-4 lg:mb-6">
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Escolha o Tema</p>
+                            <div className="grid grid-cols-2 lg:grid-cols-2 gap-3 lg:gap-4">
+                                {BACKGROUNDS.map((bg) => (
+                                    <button
+                                        key={bg.id}
+                                        onClick={() => setSelectedBg(bg)}
+                                        className={cn(
+                                            "group relative aspect-[3/4] rounded-2xl overflow-hidden border-2 transition-all p-1",
+                                            selectedBg.id === bg.id ? "border-sky-500 shadow-lg shadow-sky-500/20 scale-105" : "border-slate-50 hover:border-slate-200"
+                                        )}
+                                    >
+                                        <div
+                                            className={cn("w-full h-full rounded-xl bg-cover bg-center shadow-inner", bg.className)}
+                                            style={bg.url ? { backgroundImage: `url(${bg.url})` } : {}}
+                                        />
+                                        <div className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                                            <p className="text-[9px] font-black text-white text-center uppercase tracking-widest leading-none">
+                                                {bg.label}
+                                            </p>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="space-y-4 pt-4 border-t border-slate-50">
+                            <div className="flex items-center justify-between px-2">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Efeitos</p>
+                            </div>
+                            <button
+                                onClick={() => setShowGreeting(!showGreeting)}
+                                className={cn(
+                                    "w-full flex items-center justify-between px-5 py-3.5 rounded-2xl border-2 transition-all group",
+                                    showGreeting ? "bg-emerald-50 border-emerald-100 text-emerald-700" : "bg-slate-50 border-slate-100 text-slate-500"
+                                )}
+                            >
+                                <div className="flex items-center gap-2.5 font-bold text-[10px] uppercase tracking-wider">
+                                    <div className={cn("p-1.5 rounded-lg transition-colors", showGreeting ? "bg-emerald-500 text-white" : "bg-slate-200 text-slate-400")}>
+                                        <Zap className="w-3 h-3 fill-current" />
+                                    </div>
+                                    Bom Dia
+                                </div>
+                                <div className={cn("w-7 h-4 rounded-full relative transition-all", showGreeting ? "bg-emerald-500" : "bg-slate-200")}>
+                                    <div className={cn("absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all", showGreeting ? "left-3.5" : "left-0.5")} />
+                                </div>
+                            </button>
+                        </div>
+
+                        <div className="mt-2 lg:mt-8 pt-2 lg:pt-6">
+                            <button
+                                onClick={handleShare}
+                                disabled={loading}
+                                className="w-full py-4 lg:py-5 bg-gradient-to-r from-purple-600 to-rose-500 text-white rounded-[1.25rem] lg:rounded-[2rem] font-black text-sm lg:text-base flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-xl lg:shadow-2xl shadow-rose-500/20 disabled:opacity-50"
+                            >
+                                {loading ? <Loader2 className="w-5 h-5 lg:w-6 lg:h-6 animate-spin text-white" /> : <Instagram className="w-5 h-5 lg:w-6 lg:h-6" />}
+                                Compartilhar Story
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};

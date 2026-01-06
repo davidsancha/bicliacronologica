@@ -18,6 +18,8 @@ interface VerseItemProps {
     favoritos: any[];
     toggleFavorito: (verse: any) => void;
     setStoryVerse: (verse: { verse: string; ref: string } | null) => void;
+    activeVerse: string | null;
+    setActiveVerse: (id: string | null) => void;
 }
 
 const VerseItem: React.FC<VerseItemProps> = ({
@@ -27,30 +29,35 @@ const VerseItem: React.FC<VerseItemProps> = ({
     versaoAtual,
     favoritos,
     toggleFavorito,
-    setStoryVerse
+    setStoryVerse,
+    activeVerse,
+    setActiveVerse
 }) => {
     const favId = `${cap.meta.sigla}:${cap.meta.cap}:${v.verse}:${versaoAtual}`;
     const isFav = favoritos.some(f => f.id === favId);
-    const [activeVerse, setActiveVerse] = useState<string | null>(null);
     const [lastTap, setLastTap] = useState(0);
 
-    const handleGesture = (id: string) => {
+    const handleGesture = (e: React.MouseEvent | React.TouchEvent) => {
+        e.stopPropagation(); // Prevent the global click listener from immediately closing it
         const now = Date.now();
-        if (now - lastTap < 300) {
-            setActiveVerse(activeVerse === id ? null : id);
+        const delta = now - lastTap;
+
+        if (delta > 0 && delta < 350) {
+            setActiveVerse(prev => prev === favId ? null : favId);
+            setLastTap(0);
+        } else {
+            setLastTap(now);
         }
-        setLastTap(now);
     };
 
     return (
         <span
             key={vIdx}
             className={cn(
-                "inline mr-2 group cursor-pointer transition-all px-1.5 py-0.5 rounded-lg relative select-none",
-                isFav ? "bg-rose-100/30 text-rose-900 ring-1 ring-rose-200/50" : "hover:bg-slate-100/30"
+                "inline mr-2 group cursor-default transition-all px-1.5 py-0.5 rounded-lg relative select-none",
+                isFav ? "bg-rose-100/30 text-rose-900 ring-1 ring-rose-200/50 shadow-sm" : "hover:bg-slate-100/30"
             )}
-            onDoubleClick={() => setActiveVerse(activeVerse === favId ? null : favId)}
-            onClick={() => handleGesture(favId)}
+            onClick={handleGesture}
         >
             <sup className={cn(
                 "font-sans font-black mr-1 text-[11px] transition-colors",
@@ -118,6 +125,13 @@ export const BibleReader: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [bibleContent, setBibleContent] = useState<any[]>([]);
     const [storyVerse, setStoryVerse] = useState<{ verse: string; ref: string } | null>(null);
+    const [activeVerse, setActiveVerse] = useState<string | null>(null);
+
+    useEffect(() => {
+        const handleClickOutside = () => setActiveVerse(null);
+        window.addEventListener('click', handleClickOutside);
+        return () => window.removeEventListener('click', handleClickOutside);
+    }, []);
 
     useEffect(() => {
         if (currentReadingRaw) {
@@ -271,6 +285,8 @@ export const BibleReader: React.FC = () => {
                                             favoritos={favoritos}
                                             toggleFavorito={toggleFavorito}
                                             setStoryVerse={setStoryVerse}
+                                            activeVerse={activeVerse}
+                                            setActiveVerse={setActiveVerse}
                                         />
                                     ))}
                                 </div>

@@ -107,7 +107,7 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
                 initial={{ y: 0 }}
                 animate={{ y: isVisible ? 0 : 120 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
-                className="lg:hidden fixed bottom-6 left-6 right-6 bg-sky-50/95 backdrop-blur-md border border-sky-100 px-2 py-4 flex items-center justify-around z-[60] shadow-[0_20px_50px_rgba(14,165,233,0.15)] rounded-[2.5rem] safe-area-bottom transition-colors"
+                className="lg:hidden fixed bottom-6 left-6 right-6 bg-gradient-to-br from-sky-50 to-white/95 backdrop-blur-md border border-sky-100 px-2 py-4 flex items-center justify-around z-[60] shadow-[0_20px_50px_rgba(148,163,184,0.25)] rounded-[2.5rem] safe-area-bottom transition-all"
             >
                 {bottomNavItems.map((item) => {
                     const isActive = location.pathname === item.type;
@@ -124,7 +124,7 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
                                 >
                                     <div className={cn(
                                         "w-9 h-9 rounded-full flex items-center justify-center text-[10px] font-black transition-all overflow-hidden border-2",
-                                        isProfileOpen || isActive ? 'border-rose-400 bg-rose-500 text-white shadow-lg shadow-rose-500/20 scale-110' : 'border-sky-100 bg-white text-slate-400 shadow-sm'
+                                        isProfileOpen || isActive ? 'border-rose-500 bg-white text-rose-500 shadow-lg shadow-rose-500/10 scale-110' : 'border-sky-100 bg-white text-slate-400 shadow-sm'
                                     )}>
                                         {avatarUrl ? (
                                             <img src={avatarUrl} alt={firstName} className="w-full h-full object-cover" />
@@ -156,10 +156,10 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
                                 isActive ? 'text-rose-500' : 'text-slate-400 active:scale-90 shadow-none'
                             )}
                         >
-                            <div className={cn("transition-transform duration-300", isActive ? 'scale-110 drop-shadow-[0_0_8px_rgba(244,63,94,0.4)]' : '')}>
+                            <div className={cn("transition-transform duration-300", isActive ? 'scale-110' : '')}>
                                 {React.cloneElement(item.icon as React.ReactElement, {
                                     strokeWidth: isActive ? 3 : 2,
-                                    fill: isActive ? 'currentColor' : 'none'
+                                    fill: 'none'
                                 })}
                             </div>
                             {isActive && (

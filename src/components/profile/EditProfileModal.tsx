@@ -180,7 +180,6 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({ isOpen, onCl
                                                 accept="image/*"
                                                 className="hidden"
                                                 onChange={handleFileSelect}
-                                                capture="user" // On mobile this suggests camera, but stays as file picker
                                             />
                                         </label>
                                     </div>

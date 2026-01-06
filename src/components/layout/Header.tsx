@@ -228,7 +228,7 @@ export const Header: React.FC<HeaderProps> = ({
                         onClick={() => setIsProfileOpen(!isProfileOpen)}
                         className="flex items-center gap-2 p-1 lg:p-1 lg:pr-3 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-all group relative"
                     >
-                        <div className="w-8 h-8 rounded-lg bg-sky-500 text-white flex items-center justify-center text-xs font-black shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform overflow-hidden">
+                        <div className="w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center text-xs font-black shadow-lg shadow-sky-500/20 group-hover:scale-105 transition-transform overflow-hidden">
                             {avatarUrl ? (
                                 <img src={avatarUrl} alt={firstName} className="w-full h-full object-cover" />
                             ) : (

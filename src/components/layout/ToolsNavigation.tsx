@@ -93,7 +93,7 @@ export const ToolsNavigation: React.FC<ToolsNavigationProps> = ({ onEditProfile,
                 initial={{ y: 0 }}
                 animate={{ y: isVisible ? 0 : 120 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
-                className="lg:hidden fixed bottom-6 left-6 right-6 bg-slate-900 border border-slate-800 px-2 py-4 flex items-center justify-around z-50 shadow-[0_20px_50px_rgba(0,0,0,0.4)] rounded-[2.5rem] safe-area-bottom"
+                className="lg:hidden fixed bottom-6 left-6 right-6 bg-slate-900 border border-slate-800 px-2 py-4 flex items-center justify-around z-[60] shadow-[0_20px_50px_rgba(0,0,0,0.4)] rounded-[2.5rem] safe-area-bottom"
             >
                 {bottomNavItems.map((item) => {
                     const isActive = location.pathname === item.type;

@@ -59,16 +59,17 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                 cacheBust: true,
             });
 
-            if (navigator.share) {
-                const blob = await (await fetch(dataUrl)).blob();
-                const file = new File([blob], 'story.png', { type: 'image/png' });
+            if (navigator.share && navigator.canShare) {
                 try {
-                    await navigator.share({
-                        files: [file],
-                        title: 'Versículo do Dia',
-                        text: 'Compartilhado via Jornada Bíblica 2026',
-                    });
-                    return;
+                    const blob = await (await fetch(dataUrl)).blob();
+                    const file = new File([blob], 'story.png', { type: 'image/png' });
+
+                    if (navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            files: [file],
+                        });
+                        return;
+                    }
                 } catch (shareError) {
                     console.log('Share error or cancelled:', shareError);
                 }
@@ -188,9 +189,6 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                                             className={cn("w-full h-full rounded-[4px] lg:rounded-xl bg-cover bg-center shadow-inner", bg.className)}
                                             style={bg.url ? { backgroundImage: `url(${bg.url})` } : {}}
                                         />
-                                        <div className="absolute inset-x-0 bottom-0 p-1 bg-gradient-to-t from-black/80 to-transparent lg:hidden">
-                                            {/* Hide label on mobile thumbnails to save space */}
-                                        </div>
                                         <div className="absolute inset-x-0 bottom-0 p-1.5 bg-gradient-to-t from-black/80 to-transparent hidden lg:block">
                                             <p className="text-[8px] lg:text-[9px] font-black text-white text-center uppercase tracking-widest leading-none">
                                                 {bg.label}
@@ -201,11 +199,12 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                             </div>
                         </div>
 
-                        <div className="space-y-3 pt-3 border-t border-slate-50">
+                        {/* Fixed Footer: Actions */}
+                        <div className="flex-none pt-2 lg:pt-4 border-t border-slate-50 space-y-4">
                             <button
                                 onClick={() => setShowGreeting(!showGreeting)}
                                 className={cn(
-                                    "w-full flex items-center justify-between px-4 py-2.5 rounded-2xl border-2 transition-all group",
+                                    "w-full flex items-center justify-between px-4 py-2 lg:py-3 rounded-2xl border-2 transition-all group",
                                     showGreeting ? "bg-emerald-50 border-emerald-100 text-emerald-700" : "bg-slate-50 border-slate-100 text-slate-500"
                                 )}
                             >
@@ -219,13 +218,11 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                                     <div className={cn("absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all", showGreeting ? "left-3.5" : "left-0.5")} />
                                 </div>
                             </button>
-                        </div>
 
-                        <div className="mt-4 lg:mt-8">
                             <button
                                 onClick={handleShare}
                                 disabled={loading}
-                                className="w-full py-5 lg:py-6 bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500 text-white rounded-2xl lg:rounded-[2rem] font-black text-base lg:text-lg flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-[0_20px_40px_rgba(244,63,94,0.3)] disabled:opacity-50"
+                                className="w-full py-4 lg:py-6 bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500 text-white rounded-2xl lg:rounded-[2rem] font-black text-base lg:text-lg flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-[0_20px_40px_rgba(244,63,94,0.3)] disabled:opacity-50"
                             >
                                 {loading ? <Loader2 className="w-6 h-6 animate-spin text-white" /> : <Instagram className="w-6 h-6" />}
                                 Compartilhar no Instagram

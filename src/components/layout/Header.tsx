@@ -195,16 +195,6 @@ export const Header: React.FC<HeaderProps> = ({
                     )}
 
                     <div className="flex flex-col min-w-0 flex-1">
-                        {!isCompact && (
-                            <div className="lg:hidden flex flex-col mb-1 pb-1 border-b border-sky-100/30">
-                                <div className="flex items-center justify-between">
-                                    <div className="text-[10px] font-black text-sky-400 uppercase tracking-[0.2em] leading-none">
-                                        {formattedWeekday}, {formattedDateFull}
-                                    </div>
-                                    <div className="opacity-60 scale-75 transform origin-right"><SyncIcon /></div>
-                                </div>
-                            </div>
-                        )}
                         <div className="flex items-center justify-between lg:justify-start gap-2 w-full">
                             <h1 className={cn("font-black text-slate-900 truncate transition-all", isCompact ? "text-base lg:text-3xl" : "text-lg md:text-2xl lg:text-3xl")}>
                                 {currentReadingFull}
@@ -263,16 +253,40 @@ export const Header: React.FC<HeaderProps> = ({
                     <div className="flex items-center bg-white border border-slate-200 rounded-xl p-0.5 shadow-sm">
                         <button onClick={() => handleMudarDia(-1)} className="p-2 text-slate-400 hover:text-sky-500 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
                         <div className="flex items-center gap-0 px-2">
-                            <input type="text" value={dayPart} onChange={(e) => handleSegmentChange('day', e.target.value)} className="bg-transparent text-xs font-black text-slate-700 w-[2ch] text-center outline-none" />
+                            <input
+                                type="text"
+                                value={dayPart}
+                                onFocus={(e) => e.target.select()}
+                                onChange={(e) => handleSegmentChange('day', e.target.value)}
+                                className="day-input bg-transparent text-xs font-black text-slate-700 w-[2ch] text-center outline-none selection:bg-sky-100"
+                            />
                             <span className="text-slate-300 font-bold mx-0.5">/</span>
-                            <input type="text" value={monthPart} onChange={(e) => handleSegmentChange('month', e.target.value)} className="bg-transparent text-xs font-black text-slate-700 w-[2ch] text-center outline-none" />
+                            <input
+                                type="text"
+                                value={monthPart}
+                                onFocus={(e) => e.target.select()}
+                                onChange={(e) => handleSegmentChange('month', e.target.value)}
+                                className="month-input bg-transparent text-xs font-black text-slate-700 w-[2ch] text-center outline-none selection:bg-sky-100"
+                            />
                         </div>
                         <button onClick={() => handleMudarDia(1)} className="p-2 text-slate-400 hover:text-sky-500 transition-colors"><ChevronRight className="w-4 h-4" /></button>
                     </div>
 
-                    <button onClick={() => { }} className="p-2.5 bg-white border border-rose-100 text-rose-500 rounded-xl hover:bg-rose-50 transition-colors shadow-sm active:scale-90" title="Calendário">
-                        <CalendarIcon className="w-4 h-4" />
-                    </button>
+                    <div className="relative">
+                        <button
+                            onClick={() => (document.getElementById('date-picker-desktop') as HTMLInputElement)?.showPicker()}
+                            className="p-2.5 bg-white border border-slate-200 text-slate-500 rounded-xl hover:bg-slate-50 transition-colors shadow-sm active:scale-90"
+                            title="Calendário"
+                        >
+                            <CalendarIcon className="w-4 h-4" />
+                        </button>
+                        <input
+                            id="date-picker-desktop"
+                            type="date"
+                            className="absolute inset-0 opacity-0 pointer-events-none"
+                            onChange={handlePickerChange}
+                        />
+                    </div>
 
                     <button onClick={() => setDataNavegacao(new Date())} className="p-2.5 bg-white border border-amber-100 text-amber-500 rounded-xl hover:bg-amber-50 transition-colors shadow-sm active:scale-90" title="Voltar para Hoje">
                         <Zap className="w-4 h-4 fill-current" />
@@ -318,9 +332,21 @@ export const Header: React.FC<HeaderProps> = ({
                         <div className="flex items-center bg-white/60 border border-sky-100 rounded-xl p-0.5 shadow-sm">
                             <button onClick={() => handleMudarDia(-1)} className="p-1.5 text-slate-400"><ChevronLeft className="w-4 h-4" /></button>
                             <div className="flex items-center gap-0 px-1">
-                                <input type="text" value={dayPart} onChange={(e) => handleSegmentChange('day', e.target.value)} className="bg-transparent text-[10px] font-bold text-slate-700 w-[2ch] text-center outline-none" />
+                                <input
+                                    type="text"
+                                    value={dayPart}
+                                    onFocus={(e) => e.target.select()}
+                                    onChange={(e) => handleSegmentChange('day', e.target.value)}
+                                    className="day-input bg-transparent text-[10px] font-bold text-slate-700 w-[2ch] text-center outline-none selection:bg-sky-100"
+                                />
                                 <span className="text-slate-300 font-bold mx-0.5">/</span>
-                                <input type="text" value={monthPart} onChange={(e) => handleSegmentChange('month', e.target.value)} className="bg-transparent text-[10px] font-bold text-slate-700 w-[2ch] text-center outline-none" />
+                                <input
+                                    type="text"
+                                    value={monthPart}
+                                    onFocus={(e) => e.target.select()}
+                                    onChange={(e) => handleSegmentChange('month', e.target.value)}
+                                    className="month-input bg-transparent text-[10px] font-bold text-slate-700 w-[2ch] text-center outline-none selection:bg-sky-100"
+                                />
                             </div>
                             <button onClick={() => handleMudarDia(1)} className="p-1.5 text-slate-400"><ChevronRight className="w-4 h-4" /></button>
                         </div>
@@ -328,9 +354,20 @@ export const Header: React.FC<HeaderProps> = ({
 
                     {/* Right: Tools Block */}
                     <div className="flex items-center gap-3">
-                        <button onClick={() => { }} className="p-2 bg-white border border-rose-100 text-rose-500 rounded-xl shadow-sm active:scale-90">
-                            <CalendarIcon className="w-4 h-4" />
-                        </button>
+                        <div className="relative">
+                            <button
+                                onClick={() => (document.getElementById('date-picker-mobile') as HTMLInputElement)?.showPicker()}
+                                className="p-2 bg-white border border-slate-200 text-slate-500 rounded-xl shadow-sm active:scale-90"
+                            >
+                                <CalendarIcon className="w-4 h-4" />
+                            </button>
+                            <input
+                                id="date-picker-mobile"
+                                type="date"
+                                className="absolute inset-0 opacity-0 pointer-events-none"
+                                onChange={handlePickerChange}
+                            />
+                        </div>
                         <SearchTool />
                         <button onClick={() => setDataNavegacao(new Date())} className="p-2 bg-white border border-amber-200 text-amber-500 rounded-xl shadow-sm active:scale-90" title="Voltar para Hoje">
                             <Zap className="w-4 h-4 fill-current" />

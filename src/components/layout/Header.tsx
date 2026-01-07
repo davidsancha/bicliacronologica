@@ -248,16 +248,6 @@ export const Header: React.FC<HeaderProps> = ({
 
                 {/* Desktop Version/Search/History always visible on desktop */}
                 <div className="hidden lg:flex items-center gap-3">
-                    <div className="flex items-center bg-white border border-slate-200 rounded-xl p-0.5 shadow-sm">
-                        <button onClick={() => handleMudarDia(-1)} className="p-2 text-slate-400 hover:text-sky-500 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
-                        <div className="flex items-center gap-0 px-2">
-                            <input type="text" value={dayPart} onChange={(e) => handleSegmentChange('day', e.target.value)} className="bg-transparent text-xs font-black text-slate-700 w-[2ch] text-center outline-none" />
-                            <span className="text-slate-300 font-bold mx-0.5">/</span>
-                            <input type="text" value={monthPart} onChange={(e) => handleSegmentChange('month', e.target.value)} className="bg-transparent text-xs font-black text-slate-700 w-[2ch] text-center outline-none" />
-                        </div>
-                        <button onClick={() => handleMudarDia(1)} className="p-2 text-slate-400 hover:text-sky-500 transition-colors"><ChevronRight className="w-4 h-4" /></button>
-                    </div>
-
                     <div className="bg-white border border-slate-200 rounded-xl px-2 py-1.5 flex items-center justify-center shadow-sm">
                         <select
                             className="bg-transparent text-[10px] font-black text-slate-600 focus:outline-none cursor-pointer uppercase tracking-tight"
@@ -270,10 +260,25 @@ export const Header: React.FC<HeaderProps> = ({
                         </select>
                     </div>
 
-                    <SearchTool />
+                    <div className="flex items-center bg-white border border-slate-200 rounded-xl p-0.5 shadow-sm">
+                        <button onClick={() => handleMudarDia(-1)} className="p-2 text-slate-400 hover:text-sky-500 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
+                        <div className="flex items-center gap-0 px-2">
+                            <input type="text" value={dayPart} onChange={(e) => handleSegmentChange('day', e.target.value)} className="bg-transparent text-xs font-black text-slate-700 w-[2ch] text-center outline-none" />
+                            <span className="text-slate-300 font-bold mx-0.5">/</span>
+                            <input type="text" value={monthPart} onChange={(e) => handleSegmentChange('month', e.target.value)} className="bg-transparent text-xs font-black text-slate-700 w-[2ch] text-center outline-none" />
+                        </div>
+                        <button onClick={() => handleMudarDia(1)} className="p-2 text-slate-400 hover:text-sky-500 transition-colors"><ChevronRight className="w-4 h-4" /></button>
+                    </div>
+
+                    <button onClick={() => { }} className="p-2.5 bg-white border border-rose-100 text-rose-500 rounded-xl hover:bg-rose-50 transition-colors shadow-sm active:scale-90" title="Calendário">
+                        <CalendarIcon className="w-4 h-4" />
+                    </button>
+
                     <button onClick={() => setDataNavegacao(new Date())} className="p-2.5 bg-white border border-amber-100 text-amber-500 rounded-xl hover:bg-amber-50 transition-colors shadow-sm active:scale-90" title="Voltar para Hoje">
                         <Zap className="w-4 h-4 fill-current" />
                     </button>
+
+                    <SearchTool />
 
                     <div
                         className="relative ml-1"
@@ -297,11 +302,11 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
             </div>
 
-            {/* Mobile Controls: Justified layout */}
+            {/* Mobile Controls: Justified layout with equal distribution */}
             {!isCompact && (
-                <div className="lg:hidden flex items-center justify-between gap-2 mt-2 pt-2 border-t border-sky-100/50">
+                <div className="lg:hidden flex items-center justify-between gap-4 mt-2 pt-2 border-t border-sky-100/50">
                     {/* Left: Navigation Block */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                         <div className="bg-white/60 border border-sky-100 rounded-xl px-2 py-1.5 flex items-center justify-center shadow-sm">
                             <select className="bg-transparent text-[10px] font-black text-sky-500 focus:outline-none cursor-pointer uppercase" value={versaoAtual} onChange={(e) => setVersaoAtual(e.target.value)}>
                                 <option value="almeida">JFA</option>
@@ -322,7 +327,10 @@ export const Header: React.FC<HeaderProps> = ({
                     </div>
 
                     {/* Right: Tools Block */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
+                        <button onClick={() => { }} className="p-2 bg-white border border-rose-100 text-rose-500 rounded-xl shadow-sm active:scale-90">
+                            <CalendarIcon className="w-4 h-4" />
+                        </button>
                         <SearchTool />
                         <button onClick={() => setDataNavegacao(new Date())} className="p-2 bg-white border border-amber-200 text-amber-500 rounded-xl shadow-sm active:scale-90" title="Voltar para Hoje">
                             <Zap className="w-4 h-4 fill-current" />

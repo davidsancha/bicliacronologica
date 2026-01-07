@@ -67,6 +67,7 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                     if (navigator.canShare({ files: [file] })) {
                         await navigator.share({
                             files: [file],
+                            title: 'Instagram Story'
                         });
                         return;
                     }
@@ -146,9 +147,9 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                                 </div>
 
                                 {/* Bottom Section: Branding */}
-                                <div className="h-10 mt-6 flex items-end justify-center">
+                                <div className="h-12 mt-6 flex items-end justify-center">
                                     <p className={cn(
-                                        "text-[9px] font-black uppercase tracking-[0.4em] drop-shadow-md opacity-80",
+                                        "text-[10px] font-black uppercase tracking-[0.4em] drop-shadow-lg",
                                         selectedBg.textColor === 'light' ? "text-white" : "text-slate-800"
                                     )}>
                                         @jornada_biblica_2026

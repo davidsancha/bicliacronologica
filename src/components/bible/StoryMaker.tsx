@@ -89,10 +89,10 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-md" onClick={onClose} />
 
-            <div className="relative bg-white w-full max-w-5xl h-[92vh] lg:h-[90vh] max-h-[900px] rounded-t-[2.5rem] lg:rounded-[3rem] shadow-2xl flex flex-col lg:flex-row overflow-hidden animate-in slide-in-from-bottom-10 lg:zoom-in-95 duration-300 translate-y-2 lg:translate-y-0">
+            <div className="relative bg-white w-full max-w-5xl h-[95vh] lg:h-[90vh] max-h-[920px] rounded-t-[2.5rem] lg:rounded-[3rem] shadow-2xl flex flex-col lg:flex-row overflow-hidden animate-in slide-in-from-bottom-10 lg:zoom-in-95 duration-300 translate-y-1 lg:translate-y-0">
                 {/* Preview Area */}
-                <div className="bg-slate-200/50 flex items-center justify-center p-2 xs:p-4 lg:p-12 overflow-hidden lg:overflow-visible min-h-[340px] xs:min-h-[380px] lg:min-h-[400px] lg:flex-1 shrink-0">
-                    <div className="relative group/preview scale-[0.55] xs:scale-[0.6] sm:scale-[0.7] lg:scale-[0.8] xl:scale-85 origin-center transition-transform duration-500">
+                <div className="bg-slate-200/50 flex items-start lg:items-center justify-center pt-8 pb-2 lg:p-12 overflow-hidden lg:overflow-visible min-h-[300px] xs:min-h-[340px] lg:min-h-[400px] lg:flex-1 shrink-0">
+                    <div className="relative group/preview scale-[0.6] xs:scale-[0.65] sm:scale-[0.7] lg:scale-[0.8] xl:scale-85 origin-top lg:origin-center transition-transform duration-500">
                         {/* Aspect Ratio Container for Export */}
                         <div
                             ref={storyRef}
@@ -172,23 +172,26 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                     </div>
 
                     <div className="flex-1 flex flex-col overflow-hidden">
-                        <div className="flex-1 overflow-y-auto lg:overflow-y-auto no-scrollbar pr-1 mb-4 lg:mb-6">
+                        <div className="flex-1 overflow-y-auto no-scrollbar pr-1 mb-4 lg:mb-6">
                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Escolha o Tema</p>
-                            <div className="flex lg:grid lg:grid-cols-2 gap-3 lg:gap-4 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 no-scrollbar">
+                            <div className="grid grid-cols-7 lg:grid-cols-2 gap-1.5 lg:gap-4 pb-2 lg:pb-0">
                                 {BACKGROUNDS.map((bg) => (
                                     <button
                                         key={bg.id}
                                         onClick={() => setSelectedBg(bg)}
                                         className={cn(
-                                            "group relative aspect-[3/4] w-24 lg:w-auto shrink-0 lg:shrink-1 rounded-2xl overflow-hidden border-2 transition-all p-1",
-                                            selectedBg.id === bg.id ? "border-sky-500 shadow-lg shadow-sky-500/20 scale-105" : "border-slate-50 hover:border-slate-200"
+                                            "group relative aspect-[3/4] w-full rounded-lg lg:rounded-2xl overflow-hidden border transition-all p-0.5",
+                                            selectedBg.id === bg.id ? "border-sky-500 ring-2 ring-sky-500/20 scale-105" : "border-slate-100 hover:border-slate-300"
                                         )}
                                     >
                                         <div
-                                            className={cn("w-full h-full rounded-xl bg-cover bg-center shadow-inner", bg.className)}
+                                            className={cn("w-full h-full rounded-[4px] lg:rounded-xl bg-cover bg-center shadow-inner", bg.className)}
                                             style={bg.url ? { backgroundImage: `url(${bg.url})` } : {}}
                                         />
-                                        <div className="absolute inset-x-0 bottom-0 p-1.5 bg-gradient-to-t from-black/80 to-transparent">
+                                        <div className="absolute inset-x-0 bottom-0 p-1 bg-gradient-to-t from-black/80 to-transparent lg:hidden">
+                                            {/* Hide label on mobile thumbnails to save space */}
+                                        </div>
+                                        <div className="absolute inset-x-0 bottom-0 p-1.5 bg-gradient-to-t from-black/80 to-transparent hidden lg:block">
                                             <p className="text-[8px] lg:text-[9px] font-black text-white text-center uppercase tracking-widest leading-none">
                                                 {bg.label}
                                             </p>
@@ -222,10 +225,10 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                             <button
                                 onClick={handleShare}
                                 disabled={loading}
-                                className="w-full py-4 lg:py-5 bg-gradient-to-r from-purple-600 to-rose-500 text-white rounded-2xl lg:rounded-[2rem] font-black text-sm lg:text-base flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-xl lg:shadow-2xl shadow-rose-500/20 disabled:opacity-50"
+                                className="w-full py-5 lg:py-6 bg-gradient-to-r from-purple-600 via-rose-500 to-amber-500 text-white rounded-2xl lg:rounded-[2rem] font-black text-base lg:text-lg flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-[0_20px_40px_rgba(244,63,94,0.3)] disabled:opacity-50"
                             >
-                                {loading ? <Loader2 className="w-5 h-5 lg:w-6 lg:h-6 animate-spin text-white" /> : <Instagram className="w-5 h-5 lg:w-6 lg:h-6" />}
-                                Compartilhar Story
+                                {loading ? <Loader2 className="w-6 h-6 animate-spin text-white" /> : <Instagram className="w-6 h-6" />}
+                                Compartilhar no Instagram
                             </button>
                         </div>
                     </div>

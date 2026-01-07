@@ -109,14 +109,13 @@ export const Header: React.FC<HeaderProps> = ({
 
     const formattedWeekday = React.useMemo(() => {
         const wd = dataNavegacao.toLocaleDateString('pt-BR', { weekday: 'long' });
-        const day = dataNavegacao.getDate();
-        return (wd.charAt(0).toUpperCase() + wd.slice(1)) + ", " + String(day).padStart(2, '0');
+        return wd.charAt(0).toUpperCase() + wd.slice(1);
     }, [dataNavegacao]);
 
     const formattedDateFull = React.useMemo(() => {
-        const day = dataNavegacao.toLocaleDateString('pt-BR', { day: '2-digit' });
+        const day = dataNavegacao.getDate();
         const month = dataNavegacao.toLocaleDateString('pt-BR', { month: 'long' });
-        return `${day} de ${month}`;
+        return `${String(day).padStart(2, '0')} de ${month}`;
     }, [dataNavegacao]);
 
     const firstName = profile?.first_name || profile?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Usuário';
@@ -195,6 +194,16 @@ export const Header: React.FC<HeaderProps> = ({
                     )}
 
                     <div className="flex flex-col min-w-0 flex-1">
+                        {!isCompact && (
+                            <div className="lg:hidden flex flex-col mb-1 pb-1 border-b border-sky-100/30">
+                                <div className="flex items-center justify-between">
+                                    <div className="text-[10px] font-black text-sky-400 uppercase tracking-[0.2em] leading-none">
+                                        {formattedWeekday}, {formattedDateFull}
+                                    </div>
+                                    <div className="opacity-60 scale-75 transform origin-right"><SyncIcon /></div>
+                                </div>
+                            </div>
+                        )}
                         <div className="flex items-center justify-between lg:justify-start gap-2 w-full">
                             <h1 className={cn("font-black text-slate-900 truncate transition-all", isCompact ? "text-base lg:text-3xl" : "text-lg md:text-2xl lg:text-3xl")}>
                                 {currentReadingFull}
@@ -292,7 +301,9 @@ export const Header: React.FC<HeaderProps> = ({
                         <Zap className="w-4 h-4 fill-current" />
                     </button>
 
-                    <SearchTool />
+                    <button onClick={() => setIsSearchOpen(true)} className="p-2.5 bg-white border border-slate-200 text-slate-500 rounded-xl hover:bg-slate-50 transition-colors shadow-sm active:scale-90" title="Pesquisar">
+                        <SearchIcon className="w-4 h-4" />
+                    </button>
 
                     <div
                         className="relative ml-1"
@@ -316,63 +327,61 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
             </div>
 
-            {/* Mobile Controls: Justified layout with equal distribution */}
+            {/* Mobile Controls: Equally spaced layout */}
             {!isCompact && (
-                <div className="lg:hidden flex items-center justify-between gap-4 mt-2 pt-2 border-t border-sky-100/50">
-                    {/* Left: Navigation Block */}
-                    <div className="flex items-center gap-3">
-                        <div className="bg-white/60 border border-sky-100 rounded-xl px-2 py-1.5 flex items-center justify-center shadow-sm">
-                            <select className="bg-transparent text-[10px] font-black text-sky-500 focus:outline-none cursor-pointer uppercase" value={versaoAtual} onChange={(e) => setVersaoAtual(e.target.value)}>
-                                <option value="almeida">JFA</option>
-                                <option value="nvi">NVI</option>
-                                <option value="ara">ARA</option>
-                            </select>
-                        </div>
-
-                        <div className="flex items-center bg-white/60 border border-sky-100 rounded-xl p-0.5 shadow-sm">
-                            <button onClick={() => handleMudarDia(-1)} className="p-1.5 text-slate-400"><ChevronLeft className="w-4 h-4" /></button>
-                            <div className="flex items-center gap-0 px-1">
-                                <input
-                                    type="text"
-                                    value={dayPart}
-                                    onFocus={(e) => e.target.select()}
-                                    onChange={(e) => handleSegmentChange('day', e.target.value)}
-                                    className="day-input bg-transparent text-[10px] font-bold text-slate-700 w-[2ch] text-center outline-none selection:bg-sky-100"
-                                />
-                                <span className="text-slate-300 font-bold mx-0.5">/</span>
-                                <input
-                                    type="text"
-                                    value={monthPart}
-                                    onFocus={(e) => e.target.select()}
-                                    onChange={(e) => handleSegmentChange('month', e.target.value)}
-                                    className="month-input bg-transparent text-[10px] font-bold text-slate-700 w-[2ch] text-center outline-none selection:bg-sky-100"
-                                />
-                            </div>
-                            <button onClick={() => handleMudarDia(1)} className="p-1.5 text-slate-400"><ChevronRight className="w-4 h-4" /></button>
-                        </div>
+                <div className="lg:hidden flex items-center justify-between gap-1 mt-2 pt-2 border-t border-sky-100/50 px-1">
+                    <div className="bg-white/60 border border-sky-100 rounded-xl px-2 py-1.5 flex items-center justify-center shadow-sm">
+                        <select className="bg-transparent text-[10px] font-black text-sky-500 focus:outline-none cursor-pointer uppercase" value={versaoAtual} onChange={(e) => setVersaoAtual(e.target.value)}>
+                            <option value="almeida">JFA</option>
+                            <option value="nvi">NVI</option>
+                            <option value="ara">ARA</option>
+                        </select>
                     </div>
 
-                    {/* Right: Tools Block */}
-                    <div className="flex items-center gap-3">
-                        <div className="relative">
-                            <button
-                                onClick={() => (document.getElementById('date-picker-mobile') as HTMLInputElement)?.showPicker()}
-                                className="p-2 bg-white border border-slate-200 text-slate-500 rounded-xl shadow-sm active:scale-90"
-                            >
-                                <CalendarIcon className="w-4 h-4" />
-                            </button>
+                    <div className="flex items-center bg-white/60 border border-sky-100 rounded-xl p-0.5 shadow-sm">
+                        <button onClick={() => handleMudarDia(-1)} className="p-1.5 text-slate-400"><ChevronLeft className="w-4 h-4" /></button>
+                        <div className="flex items-center gap-0 px-1">
                             <input
-                                id="date-picker-mobile"
-                                type="date"
-                                className="absolute inset-0 opacity-0 pointer-events-none"
-                                onChange={handlePickerChange}
+                                type="text"
+                                value={dayPart}
+                                onFocus={(e) => e.target.select()}
+                                onChange={(e) => handleSegmentChange('day', e.target.value)}
+                                className="day-input bg-transparent text-[10px] font-bold text-slate-700 w-[2ch] text-center outline-none selection:bg-sky-100"
+                            />
+                            <span className="text-slate-300 font-bold mx-0.5">/</span>
+                            <input
+                                type="text"
+                                value={monthPart}
+                                onFocus={(e) => e.target.select()}
+                                onChange={(e) => handleSegmentChange('month', e.target.value)}
+                                className="month-input bg-transparent text-[10px] font-bold text-slate-700 w-[2ch] text-center outline-none selection:bg-sky-100"
                             />
                         </div>
-                        <SearchTool />
-                        <button onClick={() => setDataNavegacao(new Date())} className="p-2 bg-white border border-amber-200 text-amber-500 rounded-xl shadow-sm active:scale-90" title="Voltar para Hoje">
-                            <Zap className="w-4 h-4 fill-current" />
-                        </button>
+                        <button onClick={() => handleMudarDia(1)} className="p-1.5 text-slate-400"><ChevronRight className="w-4 h-4" /></button>
                     </div>
+
+                    <div className="relative">
+                        <button
+                            onClick={() => (document.getElementById('date-picker-mobile') as HTMLInputElement)?.showPicker()}
+                            className="p-2 bg-white border border-slate-200 text-slate-500 rounded-xl shadow-sm active:scale-90"
+                        >
+                            <CalendarIcon className="w-4 h-4" />
+                        </button>
+                        <input
+                            id="date-picker-mobile"
+                            type="date"
+                            className="absolute inset-0 opacity-0 pointer-events-none"
+                            onChange={handlePickerChange}
+                        />
+                    </div>
+
+                    <button onClick={() => setDataNavegacao(new Date())} className="p-2 bg-white border border-amber-200 text-amber-500 rounded-xl shadow-sm active:scale-90" title="Voltar para Hoje">
+                        <Zap className="w-4 h-4 fill-current" />
+                    </button>
+
+                    <button onClick={() => setIsSearchOpen(true)} className="p-2 bg-white border border-slate-200 text-slate-500 rounded-xl shadow-sm active:scale-90">
+                        <SearchIcon className="w-4 h-4" />
+                    </button>
                 </div>
             )}
 

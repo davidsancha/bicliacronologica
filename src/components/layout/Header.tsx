@@ -248,6 +248,16 @@ export const Header: React.FC<HeaderProps> = ({
 
                 {/* Desktop Version/Search/History always visible on desktop */}
                 <div className="hidden lg:flex items-center gap-3">
+                    <div className="flex items-center bg-white border border-slate-200 rounded-xl p-0.5 shadow-sm">
+                        <button onClick={() => handleMudarDia(-1)} className="p-2 text-slate-400 hover:text-sky-500 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
+                        <div className="flex items-center gap-0 px-2">
+                            <input type="text" value={dayPart} onChange={(e) => handleSegmentChange('day', e.target.value)} className="bg-transparent text-xs font-black text-slate-700 w-[2ch] text-center outline-none" />
+                            <span className="text-slate-300 font-bold mx-0.5">/</span>
+                            <input type="text" value={monthPart} onChange={(e) => handleSegmentChange('month', e.target.value)} className="bg-transparent text-xs font-black text-slate-700 w-[2ch] text-center outline-none" />
+                        </div>
+                        <button onClick={() => handleMudarDia(1)} className="p-2 text-slate-400 hover:text-sky-500 transition-colors"><ChevronRight className="w-4 h-4" /></button>
+                    </div>
+
                     <div className="bg-white border border-slate-200 rounded-xl px-2 py-1.5 flex items-center justify-center shadow-sm">
                         <select
                             className="bg-transparent text-[10px] font-black text-slate-600 focus:outline-none cursor-pointer uppercase tracking-tight"
@@ -259,8 +269,9 @@ export const Header: React.FC<HeaderProps> = ({
                             <option value="ara">ARA</option>
                         </select>
                     </div>
+
                     <SearchTool />
-                    <button onClick={() => setDataNavegacao(new Date())} className="p-2.5 bg-white border border-amber-100 text-amber-500 rounded-xl hover:bg-amber-50 transition-colors shadow-sm active:scale-90">
+                    <button onClick={() => setDataNavegacao(new Date())} className="p-2.5 bg-white border border-amber-100 text-amber-500 rounded-xl hover:bg-amber-50 transition-colors shadow-sm active:scale-90" title="Voltar para Hoje">
                         <Zap className="w-4 h-4 fill-current" />
                     </button>
 
@@ -286,38 +297,37 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
             </div>
 
-            {/* Mobile Controls: Hidden in compact mode */}
+            {/* Mobile Controls: Justified layout */}
             {!isCompact && (
-                <div className="lg:hidden flex items-center gap-2 mt-2 pt-2 border-t border-sky-100/50 overflow-x-auto no-scrollbar">
-                    <div className="bg-white/60 border border-sky-100 rounded-xl px-2 py-1.5 flex items-center justify-center min-w-[60px] shadow-sm">
-                        <select className="bg-transparent text-[10px] font-bold text-sky-500 focus:outline-none cursor-pointer" value={versaoAtual} onChange={(e) => setVersaoAtual(e.target.value)}>
-                            <option value="almeida">JFA</option><option value="kjv">KJV</option>
-                        </select>
-                    </div>
-
-                    <div className="flex items-center bg-white/60 border border-sky-100 rounded-xl p-0.5 shadow-sm">
-                        <button onClick={() => handleMudarDia(-1)} className="p-1.5 text-slate-400"><ChevronLeft className="w-4 h-4" /></button>
-                        <div className="flex items-center gap-0 px-1">
-                            <input type="text" value={dayPart} onChange={(e) => handleSegmentChange('day', e.target.value)} className="bg-transparent text-[10px] font-bold text-slate-700 w-[2ch] text-center outline-none" />
-                            <span className="text-slate-300 font-bold mx-0.5">/</span>
-                            <input type="text" value={monthPart} onChange={(e) => handleSegmentChange('month', e.target.value)} className="bg-transparent text-[10px] font-bold text-slate-700 w-[2ch] text-center outline-none" />
+                <div className="lg:hidden flex items-center justify-between gap-2 mt-2 pt-2 border-t border-sky-100/50">
+                    {/* Left: Navigation Block */}
+                    <div className="flex items-center gap-2">
+                        <div className="bg-white/60 border border-sky-100 rounded-xl px-2 py-1.5 flex items-center justify-center shadow-sm">
+                            <select className="bg-transparent text-[10px] font-black text-sky-500 focus:outline-none cursor-pointer uppercase" value={versaoAtual} onChange={(e) => setVersaoAtual(e.target.value)}>
+                                <option value="almeida">JFA</option>
+                                <option value="nvi">NVI</option>
+                                <option value="ara">ARA</option>
+                            </select>
                         </div>
-                        <button onClick={() => handleMudarDia(1)} className="p-1.5 text-slate-400"><ChevronRight className="w-4 h-4" /></button>
+
+                        <div className="flex items-center bg-white/60 border border-sky-100 rounded-xl p-0.5 shadow-sm">
+                            <button onClick={() => handleMudarDia(-1)} className="p-1.5 text-slate-400"><ChevronLeft className="w-4 h-4" /></button>
+                            <div className="flex items-center gap-0 px-1">
+                                <input type="text" value={dayPart} onChange={(e) => handleSegmentChange('day', e.target.value)} className="bg-transparent text-[10px] font-bold text-slate-700 w-[2ch] text-center outline-none" />
+                                <span className="text-slate-300 font-bold mx-0.5">/</span>
+                                <input type="text" value={monthPart} onChange={(e) => handleSegmentChange('month', e.target.value)} className="bg-transparent text-[10px] font-bold text-slate-700 w-[2ch] text-center outline-none" />
+                            </div>
+                            <button onClick={() => handleMudarDia(1)} className="p-1.5 text-slate-400"><ChevronRight className="w-4 h-4" /></button>
+                        </div>
                     </div>
 
-                    {/* Restored Mobile Buttons */}
+                    {/* Right: Tools Block */}
                     <div className="flex items-center gap-2">
                         <SearchTool />
-                        <button onClick={() => setDataNavegacao(new Date())} className="p-2 bg-white border border-amber-200 text-amber-500 rounded-xl shadow-sm">
+                        <button onClick={() => setDataNavegacao(new Date())} className="p-2 bg-white border border-amber-200 text-amber-500 rounded-xl shadow-sm active:scale-90" title="Voltar para Hoje">
                             <Zap className="w-4 h-4 fill-current" />
                         </button>
                     </div>
-
-                    <SearchTool />
-
-                    <button onClick={() => setDataNavegacao(new Date())} className="flex items-center justify-center p-2 bg-white border border-amber-200 text-amber-500 rounded-xl shadow-sm">
-                        <Zap className="w-4 h-4 fill-current" />
-                    </button>
                 </div>
             )}
 

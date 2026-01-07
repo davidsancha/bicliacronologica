@@ -75,10 +75,10 @@ const VerseItem: React.FC<VerseItemProps> = ({
             <AnimatePresence>
                 {activeVerse === favId && (
                     <motion.span
-                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                        initial={{ opacity: 0, scale: 0.9, y: 5 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-5 bg-white border border-slate-200 p-5 rounded-full shadow-[0_30px_60px_rgba(0,0,0,0.12)] z-[999] ring-1 ring-slate-100"
+                        exit={{ opacity: 0, scale: 0.9, y: 5 }}
+                        className="absolute left-1/2 -bottom-14 -translate-x-1/2 flex items-center gap-4 bg-white border border-slate-200 p-2.5 rounded-full shadow-[0_15px_30px_rgba(0,0,0,0.12)] z-20 ring-1 ring-slate-100 whitespace-nowrap"
                     >
                         <button
                             onClick={(e) => {
@@ -93,19 +93,19 @@ const VerseItem: React.FC<VerseItemProps> = ({
                                     translation: versaoAtual
                                 });
                             }}
-                            className="hover:scale-110 active:scale-95 transition-all p-2"
+                            className="hover:scale-110 active:scale-95 transition-all p-1.5"
                         >
-                            <Heart className={cn("w-[22px] h-[22px]", isFav ? "fill-red-500 text-red-500" : "text-slate-400")} />
+                            <Heart className={cn("w-[19px] h-[19px]", isFav ? "fill-red-500 text-red-500" : "text-slate-400")} />
                         </button>
-                        <div className="w-px h-6 bg-slate-100" />
+                        <div className="w-px h-5 bg-slate-100" />
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setStoryVerse({ verse: v.text.trim(), ref: `${cap.bookName} ${cap.meta.cap}:${v.verse}` });
                             }}
-                            className="hover:scale-110 active:scale-95 transition-all p-2"
+                            className="hover:scale-110 active:scale-95 transition-all p-1.5"
                         >
-                            <Instagram className="w-[22px] h-[22px] text-slate-400 hover:text-sky-500" />
+                            <Instagram className="w-[19px] h-[19px] text-slate-400 hover:text-sky-500" />
                         </button>
                     </motion.span>
                 )}

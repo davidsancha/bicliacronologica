@@ -91,8 +91,8 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
 
             <div className="relative bg-white w-full max-w-5xl h-[95vh] lg:h-[90vh] max-h-[920px] rounded-t-[2.5rem] lg:rounded-[3rem] shadow-2xl flex flex-col lg:flex-row overflow-hidden animate-in slide-in-from-bottom-10 lg:zoom-in-95 duration-300 translate-y-1 lg:translate-y-0">
                 {/* Preview Area */}
-                <div className="bg-slate-200/50 flex items-start lg:items-center justify-center pt-8 pb-2 lg:p-12 overflow-hidden lg:overflow-visible min-h-[300px] xs:min-h-[340px] lg:min-h-[400px] lg:flex-1 shrink-0">
-                    <div className="relative group/preview scale-[0.6] xs:scale-[0.65] sm:scale-[0.7] lg:scale-[0.8] xl:scale-85 origin-top lg:origin-center transition-transform duration-500">
+                <div className="bg-slate-200/50 flex items-center justify-center pt-8 pb-4 lg:p-12 overflow-hidden lg:overflow-visible min-h-[220px] xs:min-h-[260px] lg:min-h-[400px] lg:flex-1 shrink-0 relative">
+                    <div className="relative group/preview scale-[0.45] xs:scale-[0.5] sm:scale-[0.6] lg:scale-[0.8] xl:scale-85 origin-center lg:origin-center transition-transform duration-500">
                         {/* Aspect Ratio Container for Export */}
                         <div
                             ref={storyRef}
@@ -159,7 +159,7 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                 </div>
 
                 {/* Controls Area */}
-                <div className="w-full lg:w-[400px] bg-white p-4 lg:p-10 border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col overflow-hidden shrink-0 lg:flex-none h-full max-h-[60vh] lg:max-h-none">
+                <div className="w-full lg:w-[400px] bg-white p-4 lg:p-10 border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col overflow-hidden shrink lg:flex-none h-full lg:max-h-none flex-1 lg:flex-initial">
                     <div className="flex items-center justify-between mb-4 lg:mb-8">
                         <div>
                             <h3 className="text-base lg:text-2xl font-black text-slate-900 flex items-center gap-2 lg:gap-3">
@@ -171,8 +171,8 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                         </button>
                     </div>
 
-                    <div className="flex-1 flex flex-col overflow-hidden">
-                        <div className="flex-1 overflow-y-auto no-scrollbar pr-1 mb-4 lg:mb-6">
+                    <div className="flex-1 flex flex-col overflow-y-auto no-scrollbar">
+                        <div className="pr-1 mb-4 lg:mb-6">
                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 ml-1">Escolha o Tema</p>
                             <div className="grid grid-cols-7 lg:grid-cols-2 gap-1.5 lg:gap-4 pb-2 lg:pb-0">
                                 {BACKGROUNDS.map((bg) => (

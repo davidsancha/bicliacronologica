@@ -185,15 +185,26 @@ export const Header: React.FC<HeaderProps> = ({
                     <button className="lg:hidden p-2 -ml-2 text-slate-400" onClick={onMenuClick}><Menu className="w-5 h-5" /></button>
 
                     {!isCompact && (
-                        <div className="hidden sm:block border-r border-sky-200/50 pr-4 lg:pr-6 mr-1 text-left shrink-0">
+                        <div className="hidden lg:block border-r border-sky-200/50 pr-4 lg:pr-6 mr-1 text-left shrink-0">
                             <div className="text-[10px] lg:text-xs font-bold text-slate-500 mb-0.5 uppercase tracking-wider">{formattedWeekday}</div>
-                            <div className="text-[10px] lg:text-[11px] uppercase font-black text-sky-400 tracking-widest leading-none">
+                            <div className="text-[10px] lg:text-[11px] uppercase font-black text-sky-400 tracking-widest flex items-center gap-1.5 leading-none">
                                 {formattedDateFull}
+                                <div className="ml-1 opacity-60"><SyncIcon /></div>
                             </div>
                         </div>
                     )}
 
                     <div className="flex flex-col min-w-0 flex-1">
+                        {!isCompact && (
+                            <div className="lg:hidden flex flex-col mb-1 pb-1 border-b border-sky-100/30">
+                                <div className="flex items-center justify-between">
+                                    <div className="text-[10px] font-black text-sky-400 uppercase tracking-[0.2em] leading-none">
+                                        {formattedWeekday}, {formattedDateFull}
+                                    </div>
+                                    <div className="opacity-60 scale-75 transform origin-right"><SyncIcon /></div>
+                                </div>
+                            </div>
+                        )}
                         <div className="flex items-center justify-between lg:justify-start gap-2 w-full">
                             <h1 className={cn("font-black text-slate-900 truncate transition-all", isCompact ? "text-base lg:text-3xl" : "text-lg md:text-2xl lg:text-3xl")}>
                                 {currentReadingFull}
@@ -215,14 +226,6 @@ export const Header: React.FC<HeaderProps> = ({
                                 )}
                             </div>
                         </div>
-                        {!isCompact && (
-                            <div className="flex items-center gap-2">
-                                <p className="text-[9px] lg:text-[11px] font-black text-sky-400 uppercase tracking-[0.2em] leading-none mb-0.5">Jornada 2026</p>
-                                <div className="hidden sm:block opacity-40 ml-1">
-                                    <SyncIcon />
-                                </div>
-                            </div>
-                        )}
                     </div>
                 </div>
 
@@ -238,26 +241,26 @@ export const Header: React.FC<HeaderProps> = ({
                             )}
                         >
                             {leiturasConcluidas.includes(currentKey) ? <CheckCircle className="w-4 h-4" /> : <div className="w-4 h-4 rounded-full border-2 border-current" />}
-                            {leiturasConcluidas.includes(currentKey) ? 'Concluída' : 'Marcar Lido'}
+                            {leiturasConcluidas.includes(currentKey) ? 'Leitura Concluída' : 'Marcar como Lido'}
                         </button>
                     </div>
                 )}
 
                 {/* Desktop Version/Search/History always visible on desktop */}
                 <div className="hidden lg:flex items-center gap-3">
-                    <div className="bg-white border border-slate-200 rounded-xl px-3 py-2 flex items-center justify-center min-w-[100px] shadow-sm">
+                    <div className="bg-white border border-slate-200 rounded-xl px-2 py-1.5 flex items-center justify-center shadow-sm">
                         <select
-                            className="bg-transparent text-xs font-bold text-slate-600 focus:outline-none cursor-pointer w-full"
+                            className="bg-transparent text-[10px] font-black text-slate-600 focus:outline-none cursor-pointer uppercase tracking-tight"
                             value={versaoAtual}
                             onChange={(e) => setVersaoAtual(e.target.value)}
                         >
-                            <option value="almeida">JFA (Almeida)</option>
-                            <option value="nvi">NVI (Internacional)</option>
-                            <option value="ara">ARA (Revista Atualizada)</option>
+                            <option value="almeida">JFA</option>
+                            <option value="nvi">NVI</option>
+                            <option value="ara">ARA</option>
                         </select>
                     </div>
                     <SearchTool />
-                    <button onClick={() => setDataNavegacao(new Date())} className="p-2 bg-white border border-amber-200 text-amber-500 rounded-xl hover:bg-amber-50 transition-colors shadow-sm">
+                    <button onClick={() => setDataNavegacao(new Date())} className="p-2.5 bg-white border border-amber-100 text-amber-500 rounded-xl hover:bg-amber-50 transition-colors shadow-sm active:scale-90">
                         <Zap className="w-4 h-4 fill-current" />
                     </button>
 
@@ -300,6 +303,14 @@ export const Header: React.FC<HeaderProps> = ({
                             <input type="text" value={monthPart} onChange={(e) => handleSegmentChange('month', e.target.value)} className="bg-transparent text-[10px] font-bold text-slate-700 w-[2ch] text-center outline-none" />
                         </div>
                         <button onClick={() => handleMudarDia(1)} className="p-1.5 text-slate-400"><ChevronRight className="w-4 h-4" /></button>
+                    </div>
+
+                    {/* Restored Mobile Buttons */}
+                    <div className="flex items-center gap-2">
+                        <SearchTool />
+                        <button onClick={() => setDataNavegacao(new Date())} className="p-2 bg-white border border-amber-200 text-amber-500 rounded-xl shadow-sm">
+                            <Zap className="w-4 h-4 fill-current" />
+                        </button>
                     </div>
 
                     <SearchTool />

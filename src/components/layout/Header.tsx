@@ -47,6 +47,10 @@ export const Header: React.FC<HeaderProps> = ({
 
     useEffect(() => {
         const handleScroll = (e: any) => {
+            if (window.innerWidth >= 1024) {
+                setIsCompact(false);
+                return;
+            }
             const scrollTop = e.detail?.scrollTop ?? 0;
             setIsCompact(scrollTop > 50);
         };
@@ -172,27 +176,36 @@ export const Header: React.FC<HeaderProps> = ({
     return (
         <header
             className={cn(
-                "bg-gradient-to-br from-sky-100 via-sky-50 to-white/95 backdrop-blur-md border-b border-sky-200 px-4 lg:px-6 z-[50] shadow-sm sticky top-0 transition-all duration-300 overflow-hidden",
+                "bg-gradient-to-br from-sky-100 via-sky-50 to-white/95 backdrop-blur-md border-b border-sky-200 px-4 lg:px-6 z-[50] shadow-sm sticky top-0 transition-all duration-300",
                 isCompact ? "py-2" : "py-3 lg:py-4"
             )}
         >
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 lg:gap-4">
-                <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1 lg:flex-none">
+                <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
                     <button className="lg:hidden p-2 -ml-2 text-slate-400" onClick={onMenuClick}><Menu className="w-5 h-5" /></button>
 
+                    {!isCompact && (
+                        <div className="hidden sm:block border-r border-sky-200/50 pr-4 lg:pr-6 mr-1 text-left shrink-0">
+                            <div className="text-[10px] lg:text-xs font-bold text-slate-500 mb-0.5 uppercase tracking-wider">{formattedWeekday}</div>
+                            <div className="text-[10px] lg:text-[11px] uppercase font-black text-sky-400 tracking-widest leading-none">
+                                {formattedDateFull}
+                            </div>
+                        </div>
+                    )}
+
                     <div className="flex flex-col min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-between lg:justify-start gap-2 w-full">
                             <h1 className={cn("font-black text-slate-900 truncate transition-all", isCompact ? "text-base lg:text-3xl" : "text-lg md:text-2xl lg:text-3xl")}>
                                 {currentReadingFull}
                             </h1>
 
-                            {/* Mobile Compact: Marcar Lido next to title */}
-                            <div className="lg:hidden">
+                            {/* Mobile Compact: Marcar Lido aligned RIGHT */}
+                            <div className="lg:hidden flex-none">
                                 {isCompact && (
                                     <button
                                         onClick={() => toggleLeitura(currentKey)}
                                         className={cn(
-                                            "flex items-center gap-1 px-3 py-1 rounded-full font-bold text-[10px] transition-all",
+                                            "flex items-center gap-1 px-3 py-1.5 rounded-full font-black text-[10px] uppercase tracking-wider transition-all",
                                             leiturasConcluidas.includes(currentKey) ? 'bg-emerald-500 text-white' : 'bg-amber-500 text-white shadow-lg shadow-amber-500/20'
                                         )}
                                     >
@@ -204,8 +217,8 @@ export const Header: React.FC<HeaderProps> = ({
                         </div>
                         {!isCompact && (
                             <div className="flex items-center gap-2">
-                                <p className="text-[10px] lg:text-[13px] font-black text-sky-500 uppercase tracking-widest leading-none">Jornada 2026</p>
-                                <div className="lg:hidden flex items-center gap-1.5 opacity-40 ml-1">
+                                <p className="text-[9px] lg:text-[11px] font-black text-sky-400 uppercase tracking-[0.2em] leading-none mb-0.5">Jornada 2026</p>
+                                <div className="hidden sm:block opacity-40 ml-1">
                                     <SyncIcon />
                                 </div>
                             </div>
@@ -217,7 +230,12 @@ export const Header: React.FC<HeaderProps> = ({
                     <div className="flex items-center gap-2 w-full lg:w-auto">
                         <button
                             onClick={() => toggleLeitura(currentKey)}
-                            className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex-1 lg:flex-none ${leiturasConcluidas.includes(currentKey) ? 'bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm' : 'bg-amber-500 text-white shadow-lg shadow-amber-500/20 active:scale-95'}`}
+                            className={cn(
+                                "flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex-1 lg:flex-none",
+                                leiturasConcluidas.includes(currentKey)
+                                    ? 'bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-sm'
+                                    : 'bg-amber-500 text-white shadow-[0_10px_20px_rgba(245,158,11,0.2)] active:scale-95'
+                            )}
                         >
                             {leiturasConcluidas.includes(currentKey) ? <CheckCircle className="w-4 h-4" /> : <div className="w-4 h-4 rounded-full border-2 border-current" />}
                             {leiturasConcluidas.includes(currentKey) ? 'Concluída' : 'Marcar Lido'}

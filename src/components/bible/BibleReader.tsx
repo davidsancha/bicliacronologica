@@ -75,10 +75,10 @@ const VerseItem: React.FC<VerseItemProps> = ({
             <AnimatePresence>
                 {activeVerse === favId && (
                     <motion.span
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-6 bg-white/95 backdrop-blur-md border border-slate-200 p-6 rounded-full shadow-[0_20px_60px_rgba(0,0,0,0.15)] z-[100] ring-1 ring-slate-200"
+                        initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-5 bg-white border border-slate-200 p-5 rounded-full shadow-[0_30px_60px_rgba(0,0,0,0.12)] z-[999] ring-1 ring-slate-100"
                     >
                         <button
                             onClick={(e) => {
@@ -95,9 +95,9 @@ const VerseItem: React.FC<VerseItemProps> = ({
                             }}
                             className="hover:scale-110 active:scale-95 transition-all p-2"
                         >
-                            <Heart className={cn("w-7 h-7", isFav ? "fill-red-500 text-red-500" : "text-slate-400")} />
+                            <Heart className={cn("w-[22px] h-[22px]", isFav ? "fill-red-500 text-red-500" : "text-slate-400")} />
                         </button>
-                        <div className="w-px h-8 bg-slate-200" />
+                        <div className="w-px h-6 bg-slate-100" />
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -105,7 +105,7 @@ const VerseItem: React.FC<VerseItemProps> = ({
                             }}
                             className="hover:scale-110 active:scale-95 transition-all p-2"
                         >
-                            <Instagram className="w-7 h-7 text-slate-400 hover:text-sky-500" />
+                            <Instagram className="w-[22px] h-[22px] text-slate-400 hover:text-sky-500" />
                         </button>
                     </motion.span>
                 )}

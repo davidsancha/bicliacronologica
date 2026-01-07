@@ -159,7 +159,7 @@ export const StoryMaker: React.FC<StoryMakerProps> = ({ verse, reference, onClos
                 </div>
 
                 {/* Controls Area */}
-                <div className="w-full lg:w-[400px] bg-white p-4 lg:p-10 border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col overflow-hidden shrink-0 lg:flex-none h-full max-h-[45vh] lg:max-h-none">
+                <div className="w-full lg:w-[400px] bg-white p-4 lg:p-10 border-t lg:border-t-0 lg:border-l border-slate-100 flex flex-col overflow-hidden shrink-0 lg:flex-none h-full max-h-[60vh] lg:max-h-none">
                     <div className="flex items-center justify-between mb-4 lg:mb-8">
                         <div>
                             <h3 className="text-base lg:text-2xl font-black text-slate-900 flex items-center gap-2 lg:gap-3">

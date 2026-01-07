@@ -169,7 +169,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                                             isActive
                                                 ? 'bg-sky-50 text-sky-600 border-sky-100 shadow-sm active-day-item ring-1 ring-sky-200/50'
                                                 : isLate
-                                                    ? 'bg-red-50/30 text-red-700 border-red-50 hover:bg-red-50'
+                                                    ? 'bg-red-100/40 text-red-700 border-red-100/50 hover:bg-red-100/60 shadow-sm'
                                                     : 'bg-white border-transparent hover:bg-slate-50 hover:border-slate-100 text-slate-600 shadow-sm'
                                         )}
                                     >
